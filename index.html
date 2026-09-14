@@ -1,81 +1,79 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>
-@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}
-::-webkit-scrollbar{display:none;}
-
-/* 3D Cinematic Camera Viewport & Spatial Staging */
-#cinema-camera-viewport {
-  perspective: 1200px;
-  perspective-origin: 50% 50%;
-  transform-style: preserve-3d;
+<html class="dark scroll-smooth" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+}
+::-webkit-scrollbar {
+  display: none;
 }
 
-.scene-section {
-  transform-style: preserve-3d;
-  will-change: transform, opacity, filter;
-  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-  transform-origin: center center;
-  position: relative;
+/* 60fps GPU-Accelerated Section Reveals via IntersectionObserver */
+.gpu-reveal {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0) scale(0.97) rotateX(1.5deg);
+  perspective: 1000px;
+  will-change: opacity, transform;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  backface-visibility: hidden;
 }
 
-/* Layered 3D parallax elements inside scenes */
-.layer-float-hero {
-  will-change: transform;
-  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.layer-float-card {
-  will-change: transform;
-  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Floating Ember Particles Canvas Overlay */
-#ember-canvas {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 30;
-  opacity: 0.75;
-}
-
-/* Virtual Camera Spatial Depth States */
-.camera-incoming {
-  transform: translate3d(0, 32px, 60px) scale(0.95) rotateX(2.5deg);
-  opacity: 0.55;
-  filter: blur(0.5px) brightness(0.92);
-}
-
-.camera-settled {
-  transform: translate3d(0, 0, 0px) scale(1) rotateX(0deg) rotateY(0deg);
+.gpu-reveal.is-visible {
   opacity: 1;
-  filter: blur(0px) brightness(1);
+  transform: translate3d(0, 0, 0) scale(1) rotateX(0deg);
+  will-change: auto;
 }
 
-.camera-outgoing {
-  transform: translate3d(0, -36px, -160px) scale(0.93) rotateX(4deg) rotateY(-0.8deg);
-  opacity: 0.5;
-  filter: blur(1.2px) brightness(0.78);
-}
-
-/* Luxury Rim Glow on cards */
+/* Refined, buttery 3D cards for desktop with hardware acceleration */
 .lux-rim-glow {
   box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.15), 0 20px 40px -15px rgba(0,0,0,0.8);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .scene-section, .layer-float-hero, .layer-float-card {
-    transition: none !important;
-    transform: none !important;
-    filter: none !important;
-    opacity: 1 !important;
+@media (hover: hover) and (pointer: fine) {
+  .dish-card-3d {
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
   }
-  #ember-canvas {
-    display: none;
+  .dish-card-3d:hover {
+    transform: translate3d(0, -6px, 0) rotateX(2deg) rotateY(-2deg) scale(1.02);
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.35), 0 24px 48px -12px rgba(0,0,0,0.9), 0 0 25px rgba(212, 175, 55, 0.12);
+  }
+  .dish-card-3d .dish-img {
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .dish-card-3d:hover .dish-img {
+    transform: scale(1.04);
+  }
+
+  .hero-card-hover {
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  }
+  .hero-card-hover:hover {
+    transform: translate3d(0, -4px, 0) rotateX(1.5deg) rotateY(-1.5deg);
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.4), 0 28px 56px -12px rgba(0,0,0,0.95);
   }
 }
-</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+
+@media (prefers-reduced-motion: reduce) {
+  .gpu-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+  .dish-card-3d, .dish-card-3d:hover, .hero-card-hover, .hero-card-hover:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = {
     darkMode: "class",
     theme: {
       extend: {
@@ -147,46 +145,68 @@
         },
         "fontFamily": {
           "body-md": [
-            "Plus Jakarta Sans"
+            "Plus Jakarta Sans", "Inter", "sans-serif"
           ],
           "headline-sm": [
-            "Playfair Display"
+            "Playfair Display", "serif"
           ],
           "title-md": [
-            "Plus Jakarta Sans"
+            "Plus Jakarta Sans", "Inter", "sans-serif"
           ],
           "body-lg": [
-            "Plus Jakarta Sans"
+            "Plus Jakarta Sans", "Inter", "sans-serif"
           ],
           "headline-lg": [
-            "Playfair Display"
+            "Playfair Display", "serif"
           ],
           "label-caps": [
-            "Plus Jakarta Sans"
+            "Plus Jakarta Sans", "Inter", "sans-serif"
           ],
           "label-sm": [
-            "Plus Jakarta Sans"
+            "Plus Jakarta Sans", "Inter", "sans-serif"
           ],
           "headline-md": [
-            "Playfair Display"
+            "Playfair Display", "serif"
           ],
           "title-lg": [
-            "Plus Jakarta Sans"
+            "Plus Jakarta Sans", "Inter", "sans-serif"
           ],
           "display-hero-mobile": [
-            "Playfair Display"
+            "Playfair Display", "serif"
           ],
           "display-hero": [
-            "Playfair Display"
+            "Playfair Display", "serif"
           ],
           "headline-lg-mobile": [
-            "Playfair Display"
+            "Playfair Display", "serif"
           ],
           "body-sm": [
-            "Plus Jakarta Sans"
+            "Plus Jakarta Sans", "Inter", "sans-serif"
           ]
         },
         "fontSize": {
+          "body-sm": [
+            "13px",
+            {
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-lg": [
+            "44px",
+            {
+              "lineHeight": "54px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-md": [
+            "32px",
+            {
+              "lineHeight": "40px",
+              "fontWeight": "500"
+            }
+          ],
           "body-md": [
             "15px",
             {
@@ -194,19 +214,12 @@
               "fontWeight": "300"
             }
           ],
-          "headline-sm": [
-            "24px",
+          "display-hero": [
+            "64px",
             {
-              "lineHeight": "32px",
-              "fontWeight": "500"
-            }
-          ],
-          "title-md": [
-            "16px",
-            {
-              "lineHeight": "24px",
-              "letterSpacing": "0.02em",
-              "fontWeight": "500"
+              "lineHeight": "76px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "400"
             }
           ],
           "body-lg": [
@@ -216,12 +229,26 @@
               "fontWeight": "300"
             }
           ],
-          "headline-lg": [
-            "44px",
+          "headline-lg-mobile": [
+            "30px",
             {
-              "lineHeight": "54px",
+              "lineHeight": "38px",
+              "fontWeight": "400"
+            }
+          ],
+          "display-hero-mobile": [
+            "38px",
+            {
+              "lineHeight": "46px",
               "letterSpacing": "-0.01em",
               "fontWeight": "400"
+            }
+          ],
+          "headline-sm": [
+            "24px",
+            {
+              "lineHeight": "32px",
+              "fontWeight": "500"
             }
           ],
           "label-caps": [
@@ -240,13 +267,6 @@
               "fontWeight": "500"
             }
           ],
-          "headline-md": [
-            "32px",
-            {
-              "lineHeight": "40px",
-              "fontWeight": "500"
-            }
-          ],
           "title-lg": [
             "20px",
             {
@@ -255,54 +275,32 @@
               "fontWeight": "600"
             }
           ],
-          "display-hero-mobile": [
-            "38px",
+          "title-md": [
+            "16px",
             {
-              "lineHeight": "46px",
-              "letterSpacing": "-0.01em",
-              "fontWeight": "400"
-            }
-          ],
-          "display-hero": [
-            "64px",
-            {
-              "lineHeight": "76px",
-              "letterSpacing": "-0.02em",
-              "fontWeight": "400"
-            }
-          ],
-          "headline-lg-mobile": [
-            "30px",
-            {
-              "lineHeight": "38px",
-              "fontWeight": "400"
-            }
-          ],
-          "body-sm": [
-            "13px",
-            {
-              "lineHeight": "20px",
-              "fontWeight": "400"
+              "lineHeight": "24px",
+              "letterSpacing": "0.02em",
+              "fontWeight": "500"
             }
           ]
         }
       },
     },
-  }</script></head><body class="bg-background font-body-md text-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col"><canvas id="ember-canvas"></canvas><header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.4)]"><div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between"><a class="flex items-center gap-space-sm group text-left" data-path="home" href="#"><img alt="Ember &amp; Spice Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XENLs68zp7hVduPuUUSAF0MGIUx5yV8CdereVgrReaq2UTJyynjmzvlpoBHuSm4zu4WYTgfp0Gl9xtyTBnK3Nv1z3pvJ8CPLPWuDMdM9wwr1RvOQP71NjfmRXHxgHS1TfS9hg-Zsdgvn6woxNVDMFvlR92u0NE2rO1HzUiSPNn8HZ6KNViMrroRHfvnSIOjQOuwi1uEcrCgxiBG4uI_k39FxJTNuElOazwNQikWWi7PQnbXghgUh2pGZmK"/><div class="flex flex-col"><span class="font-headline-sm text-title-lg tracking-wider text-on-surface group-hover:text-primary transition-colors">EMBER &amp; SPICE</span><span class="font-label-caps text-label-caps tracking-[0.25em] text-outline text-[9px] -mt-1">BANGALORE</span></div></a><nav class="hidden xl:flex items-center gap-8" data-active-classes="text-primary font-semibold"><a aria-current="page" class="transition-colors py-1 text-primary font-semibold" data-path="home" href="#hero">Home</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="our-story" href="#story">Our Story</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="menu" href="#menu">Menu</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="experience" href="#experience">Experience</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="gallery" href="#gallery">Gallery</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="chef" href="#chef">Chef</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="contact" href="#location">Contact</a></nav><div class="flex items-center gap-space-md"><a class="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded bg-transparent text-primary hover:bg-primary hover:text-on-primary font-label-caps text-label-caps tracking-[0.2em] shadow-[inset_0_0_0_1px_rgba(212,175,55,0.4)] hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-300" data-path="reservations" href="#reservation">BOOK A TABLE</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background flex-1 relative"><div class="flex flex-col w-full text-on-surface overflow-x-hidden selection:bg-primary selection:text-on-primary" id="cinema-camera-viewport">
+  }</script></head><body class="bg-background font-body-md text-body-md text-on-surface selection:bg-primary selection:text-on-primary min-h-screen flex flex-col"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.4)] transition-colors"><div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between"><a class="flex items-center gap-space-sm group text-left" data-path="home" href="#"><img alt="Ember &amp; Spice Logo" class="h-8 w-auto object-contain" height="32" src="https://lh3.googleusercontent.com/aida/AEtjO1XENLs68zp7hVduPuUUSAF0MGIUx5yV8CdereVgrReaq2UTJyynjmzvlpoBHuSm4zu4WYTgfp0Gl9xtyTBnK3Nv1z3pvJ8CPLPWuDMdM9wwr1RvOQP71NjfmRXHxgHS1TfS9hg-Zsdgvn6woxNVDMFvlR92u0NE2rO1HzUiSPNn8HZ6KNViMrroRHfvnSIOjQOuwi1uEcrCgxiBG4uI_k39FxJTNuElOazwNQikWWi7PQnbXghgUh2pGZmK" width="128"/><div class="flex flex-col"><span class="font-headline-sm text-title-lg tracking-wider text-on-surface group-hover:text-primary transition-colors">EMBER &amp; SPICE</span><span class="font-label-caps text-label-caps tracking-[0.25em] text-outline text-[9px] -mt-1">BANGALORE</span></div></a><nav class="hidden xl:flex items-center gap-8" data-active-classes="text-primary font-semibold"><a aria-current="page" class="transition-colors py-1 text-primary font-semibold" data-path="home" href="#hero">Home</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="our-story" href="#story">Our Story</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="menu" href="#menu">Menu</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="experience" href="#experience">Experience</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="gallery" href="#gallery">Gallery</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="chef" href="#chef">Chef</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="contact" href="#location">Contact</a></nav><div class="flex items-center gap-space-md"><a class="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded bg-transparent text-primary hover:bg-primary hover:text-on-primary font-label-caps text-label-caps tracking-[0.2em] shadow-[inset_0_0_0_1px_rgba(212,175,55,0.4)] hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-300" data-path="reservations" href="#reservation">BOOK A TABLE</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background flex-1 relative"><div class="flex flex-col w-full text-on-surface overflow-x-hidden selection:bg-primary selection:text-on-primary">
 <!-- ========================================================================= -->
-<!-- 1. CINEMATIC 3D HERO SECTION                                              -->
+<!-- 1. CINEMATIC HERO SECTION (Eager Loaded, 60fps Native Performance)        -->
 <!-- ========================================================================= -->
-<section class="scene-section relative min-h-[92vh] -mt-20 pt-24 pb-16 flex items-center justify-center overflow-hidden" data-scene="hero" id="hero">
-<!-- Atmospheric Background with Vignette and Parallax Layer -->
-<div class="absolute inset-0 z-0 scale-105 transition-transform duration-1000 ease-out" id="hero-bg-zoom" style="background-image: url('https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO'); background-position: center; background-size: cover;"></div>
-<div class="absolute inset-0 z-0 bg-gradient-to-r from-surface-container-lowest via-surface-container-lowest/80 to-transparent"></div>
+<section class="relative min-h-[92vh] -mt-20 pt-24 pb-16 flex items-center justify-center overflow-hidden" data-scene="hero" id="hero">
+<!-- Atmospheric Background with Vignette -->
+<div class="absolute inset-0 z-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO');"></div>
+<div class="absolute inset-0 z-0 bg-gradient-to-r from-surface-container-lowest via-surface-container-lowest/85 to-surface-container-lowest/60"></div>
 <div class="absolute inset-0 z-0 bg-gradient-to-t from-background via-transparent to-surface-container-lowest/70"></div>
 <div class="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.08)_0%,transparent_70%)]"></div>
 <div class="relative z-10 max-w-7xl w-full mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center pt-8">
 <!-- Left Narrative Typography -->
 <div class="lg:col-span-7 flex flex-col items-start space-y-6">
 <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded bg-surface-container/60 backdrop-blur-md shadow-sm">
-<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
 <span class="font-label-caps text-label-caps text-secondary-fixed tracking-[0.25em]">EST. 2024 · INDIRANAGAR, BANGALORE</span>
 </div>
 <h1 class="font-display-hero text-display-hero-mobile md:text-display-hero leading-[1.05] tracking-tight font-light text-on-surface">
@@ -333,16 +331,16 @@
 </div>
 </div>
 </div>
-<!-- Right 3D Food Showcase (Layered Depth) -->
-<div class="lg:col-span-5 relative flex items-center justify-center layer-float-hero" id="hero-3d-wrapper">
-<div class="relative w-full max-w-[420px] aspect-square group" id="hero-tilt-card" style="perspective: 1200px; transform-style: preserve-3d;">
+<!-- Right Food Showcase (Fast Eager Loaded Image, Pure CSS Hover Depth) -->
+<div class="lg:col-span-5 relative flex items-center justify-center">
+<div class="hero-card-hover relative w-full max-w-[420px] aspect-square group rounded-xl">
 <!-- Ambient Glow Orb Behind Plate -->
-<div class="absolute -inset-4 rounded-full bg-primary/15 blur-3xl transition-opacity duration-700 pointer-events-none"></div>
+<div class="absolute -inset-4 rounded-full bg-primary/15 blur-2xl pointer-events-none"></div>
 <!-- Rotated Accent Layer -->
-<div class="absolute inset-2 rounded-xl bg-surface-container-low/60 rotate-2 backdrop-blur-md shadow-2xl transition-transform duration-500 ease-out group-hover:rotate-1"></div>
+<div class="absolute inset-2 rounded-xl bg-surface-container-low/60 rotate-2 backdrop-blur-md shadow-2xl transition-transform duration-300 ease-out group-hover:rotate-1"></div>
 <!-- Main Signature Showcase Canvas -->
 <div class="relative h-full w-full rounded-xl overflow-hidden shadow-[0_24px_50px_-12px_rgba(0,0,0,0.9)] bg-surface-container-lowest flex flex-col justify-end p-6 lux-rim-glow">
-<img alt="Smoked Tandoori Paneer Signature Creation" class="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4"/>
+<img alt="Smoked Tandoori Paneer Signature Creation" class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" fetchpriority="high" height="1024" loading="eager" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4" width="1024"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
 <!-- Floating Pill Tag -->
 <div class="relative z-10 flex items-center justify-between">
@@ -366,15 +364,15 @@
 </a>
 </section>
 <!-- ========================================================================= -->
-<!-- 2. OUR STORY (SPLIT-SCREEN WITH 3D DEPTH)                                 -->
+<!-- 2. OUR STORY (LIGHTWEIGHT GPU REVEAL)                                     -->
 <!-- ========================================================================= -->
-<section class="scene-section relative py-24 bg-surface-container-lowest" data-scene="story" id="story">
+<section class="gpu-reveal relative py-24 bg-surface-container-lowest" data-scene="story" id="story">
 <div class="max-w-7xl mx-auto px-6 lg:px-12">
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 <!-- Visual Column with Architectural Accents -->
-<div class="lg:col-span-6 relative layer-float-card">
+<div class="lg:col-span-6 relative">
 <div class="relative z-10 rounded-xl overflow-hidden shadow-2xl bg-surface-container-low aspect-[4/3] group lux-rim-glow">
-<img alt="Ember &amp; Spice Bangalore Dining Room" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO"/>
+<img alt="Ember &amp; Spice Bangalore Dining Room" class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" decoding="async" height="768" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO" width="1376"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
 <!-- Overlaid Recognition Badge -->
 <div class="absolute bottom-6 left-6 right-6 p-4 rounded bg-surface-container/90 backdrop-blur-xl shadow-xl flex items-center gap-4">
@@ -426,9 +424,9 @@
 </div>
 </section>
 <!-- ========================================================================= -->
-<!-- 3. SIGNATURE DISHES (INTERACTIVE 3D PERSPECTIVE CARDS)                   -->
+<!-- 3. SIGNATURE DISHES (REFINED 3D HOVER CARDS, PURE CSS SMOOTHNESS)        -->
 <!-- ========================================================================= -->
-<section class="scene-section py-24 bg-surface-container relative" data-scene="signatures" id="signatures">
+<section class="gpu-reveal py-24 bg-surface-container relative" data-scene="signatures" id="signatures">
 <div class="max-w-7xl mx-auto px-6 lg:px-12">
 <!-- Section Header -->
 <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
@@ -445,12 +443,12 @@
 <span>CHEF'S AUTUMN SELECTION</span>
 </div>
 </div>
-<!-- 4 Interactive 3D Perspective Cards -->
+<!-- 4 Refined 3D Hover Tilt Cards -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 <!-- Dish Card 1 -->
-<div class="tilt-card group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col lux-rim-glow layer-float-card" style="perspective: 1000px; transition-delay: 40ms;">
+<div class="dish-card-3d group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl flex flex-col lux-rim-glow">
 <div class="relative aspect-square overflow-hidden bg-surface-container-high">
-<img alt="Smoked Tandoori Paneer" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4"/>
+<img alt="Smoked Tandoori Paneer" class="dish-img w-full h-full object-cover" decoding="async" height="1024" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4" width="1024"/>
 <span class="absolute top-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md font-label-caps text-label-caps text-primary shadow-sm">₹795</span>
 </div>
 <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
@@ -466,9 +464,9 @@
 </div>
 </div>
 <!-- Dish Card 2 -->
-<div class="tilt-card group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col lux-rim-glow layer-float-card" style="perspective: 1000px; transition-delay: 80ms;">
+<div class="dish-card-3d group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl flex flex-col lux-rim-glow">
 <div class="relative aspect-square overflow-hidden bg-surface-container-high">
-<img alt="Saffron Truffle Biryani" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AEtjO1VLV2Izrjc9_J4Ie26mvjE19BlIAqmYoJdqAiBmT5apzC01icT-c5i1Og3oMh6w7bTiQegSAD5u3b2P7mesVYP2HWDbLMfVJGBgVp1Tx23OTpgpLGsw5egYZ_x39UPJqQTVLZkTX9tlHRn3akfZ5s30uUiaUSJ3rrP-NUuJtIxUtlgVmCHPcjfB31naUvJaiElpm75b6OZ7sWKj_grfOQF3frOVuesk50hcL3i98ucFEcgEjh33Ul1cAbh0"/>
+<img alt="Saffron Truffle Biryani" class="dish-img w-full h-full object-cover" decoding="async" height="1024" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1VLV2Izrjc9_J4Ie26mvjE19BlIAqmYoJdqAiBmT5apzC01icT-c5i1Og3oMh6w7bTiQegSAD5u3b2P7mesVYP2HWDbLMfVJGBgVp1Tx23OTpgpLGsw5egYZ_x39UPJqQTVLZkTX9tlHRn3akfZ5s30uUiaUSJ3rrP-NUuJtIxUtlgVmCHPcjfB31naUvJaiElpm75b6OZ7sWKj_grfOQF3frOVuesk50hcL3i98ucFEcgEjh33Ul1cAbh0" width="1024"/>
 <span class="absolute top-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md font-label-caps text-label-caps text-primary shadow-sm">₹1,250</span>
 </div>
 <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
@@ -484,9 +482,9 @@
 </div>
 </div>
 <!-- Dish Card 3 -->
-<div class="tilt-card group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col lux-rim-glow layer-float-card" style="perspective: 1000px; transition-delay: 120ms;">
+<div class="dish-card-3d group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl flex flex-col lux-rim-glow">
 <div class="relative aspect-square overflow-hidden bg-surface-container-high">
-<img alt="Malai Mushroom Galouti" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AEtjO1Uz4CGMoA3H1cGu_tR4dxjMxLEeh4CCtAeScDZCKNbOEsqhTLIZqUQAgYrGghsypeDdNHEmjzhP76XzbEeE-oQHZlpWVEANjp_Yvg-lkSvHpNR4v7mLZqK_d4Raaha9rYxNeLbheOClFYbE3P7A6d8ZuucAWF_pysZ0zYb6UCXPdzQE841KSzn5364WTMRwVeLjcdzv28fnRuNgTgmBvuTHIq19YtR5xGAHsCXN79BYqaA5KOuD3wgMMsY"/>
+<img alt="Malai Mushroom Galouti" class="dish-img w-full h-full object-cover" decoding="async" height="1024" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1Uz4CGMoA3H1cGu_tR4dxjMxLEeh4CCtAeScDZCKNbOEsqhTLIZqUQAgYrGghsypeDdNHEmjzhP76XzbEeE-oQHZlpWVEANjp_Yvg-lkSvHpNR4v7mLZqK_d4Raaha9rYxNeLbheOClFYbE3P7A6d8ZuucAWF_pysZ0zYb6UCXPdzQE841KSzn5364WTMRwVeLjcdzv28fnRuNgTgmBvuTHIq19YtR5xGAHsCXN79BYqaA5KOuD3wgMMsY" width="1024"/>
 <span class="absolute top-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md font-label-caps text-label-caps text-primary shadow-sm">₹850</span>
 </div>
 <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
@@ -502,9 +500,9 @@
 </div>
 </div>
 <!-- Dish Card 4 -->
-<div class="tilt-card group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col lux-rim-glow layer-float-card" style="perspective: 1000px; transition-delay: 160ms;">
+<div class="dish-card-3d group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl flex flex-col lux-rim-glow">
 <div class="relative aspect-square overflow-hidden bg-surface-container-high">
-<img alt="Rose &amp; Cardamom Kulfi" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AEtjO1V8oVRH54DdnR_wnYUKVUe19ktL_VCatlqxsyQlsITNm1hH02YXjcN_RqnpxV8GpwUHonVqN0hr1bkmEJxH3gEYzAmz1AIl92FAqlRO66VFpofs6SNtPcJ7Bp3jvAA5EeYAA7rJ6aXenGtlLc59mY-Dl8WUW8qoGo91jV7xqHvH-0uBN4Odv1D7NdG9iRHPQXQSfKHbRKHORA_LcJj9WJOQp3iTVMnHTPhERkA5VYIEyfGlwLwEo1a6R2Pb"/>
+<img alt="Rose &amp; Cardamom Kulfi" class="dish-img w-full h-full object-cover" decoding="async" height="1024" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1V8oVRH54DdnR_wnYUKVUe19ktL_VCatlqxsyQlsITNm1hH02YXjcN_RqnpxV8GpwUHonVqN0hr1bkmEJxH3gEYzAmz1AIl92FAqlRO66VFpofs6SNtPcJ7Bp3jvAA5EeYAA7rJ6aXenGtlLc59mY-Dl8WUW8qoGo91jV7xqHvH-0uBN4Odv1D7NdG9iRHPQXQSfKHbRKHORA_LcJj9WJOQp3iTVMnHTPhERkA5VYIEyfGlwLwEo1a6R2Pb" width="1024"/>
 <span class="absolute top-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md font-label-caps text-label-caps text-primary shadow-sm">₹650</span>
 </div>
 <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
@@ -525,7 +523,7 @@
 <!-- ========================================================================= -->
 <!-- 4. MENU SECTION (SOPHISTICATED EDITORIAL LAYOUT)                          -->
 <!-- ========================================================================= -->
-<section class="scene-section py-24 bg-surface-container-lowest relative" data-scene="menu" id="menu">
+<section class="gpu-reveal py-24 bg-surface-container-lowest relative" data-scene="menu" id="menu">
 <div class="max-w-6xl mx-auto px-6 lg:px-12">
 <!-- Section Title -->
 <div class="text-center max-w-2xl mx-auto mb-14 space-y-3">
@@ -653,10 +651,10 @@
 </div>
 </section>
 <!-- ========================================================================= -->
-<!-- 5. THE EXPERIENCE (CINEMATIC FULL-WIDTH PARALLAX BANNER)                 -->
+<!-- 5. THE EXPERIENCE (CINEMATIC FULL-WIDTH BANNER)                           -->
 <!-- ========================================================================= -->
-<section class="scene-section relative py-32 overflow-hidden flex items-center justify-center" data-scene="experience" id="experience">
-<div class="absolute inset-0 z-0 bg-fixed scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO'); background-position: center; background-size: cover;"></div>
+<section class="gpu-reveal relative py-32 overflow-hidden flex items-center justify-center" data-scene="experience" id="experience">
+<div class="absolute inset-0 z-0 bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO');"></div>
 <div class="absolute inset-0 z-0 bg-surface-container-lowest/85 backdrop-blur-xs"></div>
 <div class="absolute inset-0 z-0 bg-gradient-to-b from-surface-container-lowest via-transparent to-surface-container-lowest"></div>
 <div class="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
@@ -689,9 +687,9 @@
 </div>
 </section>
 <!-- ========================================================================= -->
-<!-- 6. GALLERY (IMMERSIVE HORIZONTAL SCROLLING SHOWCASE)                      -->
+<!-- 6. GALLERY (FAST NATIVE HORIZONTAL SCROLL)                                -->
 <!-- ========================================================================= -->
-<section class="scene-section py-24 bg-surface-container-lowest overflow-hidden" data-scene="gallery" id="gallery">
+<section class="gpu-reveal py-24 bg-surface-container-lowest overflow-hidden" data-scene="gallery" id="gallery">
 <div class="max-w-7xl mx-auto px-6 lg:px-12 mb-10 flex items-end justify-between">
 <div class="space-y-2">
 <div class="flex items-center gap-3">
@@ -705,12 +703,12 @@
 <span class="font-label-caps text-[10px] tracking-widest">DRAG OR SCROLL TO GLANCE</span>
 </div>
 </div>
-<!-- Smooth Horizontal Scroll Track -->
+<!-- Smooth Native Touch/Wheel Scroll Track -->
 <div class="flex gap-6 overflow-x-auto pb-8 pt-2 px-6 lg:px-12 snap-x snap-mandatory scrollbar-none" id="gallery-carousel">
 <!-- Gallery Item 1 -->
 <div class="flex-none w-[320px] md:w-[420px] snap-center group">
 <div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
-<img alt="Smoked Sigri Dish Artistry" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4"/>
+<img alt="Smoked Sigri Dish Artistry" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" decoding="async" height="1024" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4" width="1024"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
 <div class="absolute bottom-6 left-6 right-6">
 <span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">TECHNIQUE</span>
@@ -722,7 +720,7 @@
 <!-- Gallery Item 2 -->
 <div class="flex-none w-[320px] md:w-[420px] snap-center group">
 <div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
-<img alt="The Amber Dining Hall" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO"/>
+<img alt="The Amber Dining Hall" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" decoding="async" height="768" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO" width="1376"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
 <div class="absolute bottom-6 left-6 right-6">
 <span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">ATMOSPHERE</span>
@@ -734,7 +732,7 @@
 <!-- Gallery Item 3 -->
 <div class="flex-none w-[320px] md:w-[420px] snap-center group">
 <div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
-<img alt="Saffron Dum Heritage Biryani" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1VLV2Izrjc9_J4Ie26mvjE19BlIAqmYoJdqAiBmT5apzC01icT-c5i1Og3oMh6w7bTiQegSAD5u3b2P7mesVYP2HWDbLMfVJGBgVp1Tx23OTpgpLGsw5egYZ_x39UPJqQTVLZkTX9tlHRn3akfZ5s30uUiaUSJ3rrP-NUuJtIxUtlgVmCHPcjfB31naUvJaiElpm75b6OZ7sWKj_grfOQF3frOVuesk50hcL3i98ucFEcgEjh33Ul1cAbh0"/>
+<img alt="Saffron Dum Heritage Biryani" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" decoding="async" height="1024" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1VLV2Izrjc9_J4Ie26mvjE19BlIAqmYoJdqAiBmT5apzC01icT-c5i1Og3oMh6w7bTiQegSAD5u3b2P7mesVYP2HWDbLMfVJGBgVp1Tx23OTpgpLGsw5egYZ_x39UPJqQTVLZkTX9tlHRn3akfZ5s30uUiaUSJ3rrP-NUuJtIxUtlgVmCHPcjfB31naUvJaiElpm75b6OZ7sWKj_grfOQF3frOVuesk50hcL3i98ucFEcgEjh33Ul1cAbh0" width="1024"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
 <div class="absolute bottom-6 left-6 right-6">
 <span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">RITUAL</span>
@@ -746,7 +744,7 @@
 <!-- Gallery Item 4 -->
 <div class="flex-none w-[320px] md:w-[420px] snap-center group">
 <div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
-<img alt="Rose &amp; Cardamom Kulfi Presentation" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1V8oVRH54DdnR_wnYUKVUe19ktL_VCatlqxsyQlsITNm1hH02YXjcN_RqnpxV8GpwUHonVqN0hr1bkmEJxH3gEYzAmz1AIl92FAqlRO66VFpofs6SNtPcJ7Bp3jvAA5EeYAA7rJ6aXenGtlLc59mY-Dl8WUW8qoGo91jV7xqHvH-0uBN4Odv1D7NdG9iRHPQXQSfKHbRKHORA_LcJj9WJOQp3iTVMnHTPhERkA5VYIEyfGlwLwEo1a6R2Pb"/>
+<img alt="Rose &amp; Cardamom Kulfi Presentation" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" decoding="async" height="1024" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1V8oVRH54DdnR_wnYUKVUe19ktL_VCatlqxsyQlsITNm1hH02YXjcN_RqnpxV8GpwUHonVqN0hr1bkmEJxH3gEYzAmz1AIl92FAqlRO66VFpofs6SNtPcJ7Bp3jvAA5EeYAA7rJ6aXenGtlLc59mY-Dl8WUW8qoGo91jV7xqHvH-0uBN4Odv1D7NdG9iRHPQXQSfKHbRKHORA_LcJj9WJOQp3iTVMnHTPhERkA5VYIEyfGlwLwEo1a6R2Pb" width="1024"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
 <div class="absolute bottom-6 left-6 right-6">
 <span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">CONFECTION</span>
@@ -758,7 +756,7 @@
 <!-- Gallery Item 5 -->
 <div class="flex-none w-[320px] md:w-[420px] snap-center group">
 <div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
-<img alt="Chef Arjun Mehra in Kitchen" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1UIxEnK5eO1EYP3H1_9knmqYwnIKXo-03wZcsXOAOEcUuQCv4Jrq_l9EwLJ5jkaTbp39XzdpfulX7iys9xb3ogup-sewC0rQxUvmR60I5e2EDuPmyYV8EiUFgcPb1wstpavIUBGV-ucPyD-8EAyX5llxeIlNMTNL_ADXTkke27Q9UqdXDzShc_ZAeiPqJxY6vOoqoiEZuYIbIaH_E_tVPa6-L4kxcQovflziomdnSTbZjOSIc8R3264pGaW"/>
+<img alt="Chef Arjun Mehra in Kitchen" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" decoding="async" height="1200" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1UIxEnK5eO1EYP3H1_9knmqYwnIKXo-03wZcsXOAOEcUuQCv4Jrq_l9EwLJ5jkaTbp39XzdpfulX7iys9xb3ogup-sewC0rQxUvmR60I5e2EDuPmyYV8EiUFgcPb1wstpavIUBGV-ucPyD-8EAyX5llxeIlNMTNL_ADXTkke27Q9UqdXDzShc_ZAeiPqJxY6vOoqoiEZuYIbIaH_E_tVPa6-L4kxcQovflziomdnSTbZjOSIc8R3264pGaW" width="896"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
 <div class="absolute bottom-6 left-6 right-6">
 <span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">MASTERY</span>
@@ -770,7 +768,7 @@
 <!-- Gallery Item 6 -->
 <div class="flex-none w-[320px] md:w-[420px] snap-center group">
 <div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
-<img alt="Wild Malai Mushroom Galouti Texture" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1Uz4CGMoA3H1cGu_tR4dxjMxLEeh4CCtAeScDZCKNbOEsqhTLIZqUQAgYrGghsypeDdNHEmjzhP76XzbEeE-oQHZlpWVEANjp_Yvg-lkSvHpNR4v7mLZqK_d4Raaha9rYxNeLbheOClFYbE3P7A6d8ZuucAWF_pysZ0zYb6UCXPdzQE841KSzn5364WTMRwVeLjcdzv28fnRuNgTgmBvuTHIq19YtR5xGAHsCXN79BYqaA5KOuD3wgMMsY"/>
+<img alt="Wild Malai Mushroom Galouti Texture" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" decoding="async" height="1024" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1Uz4CGMoA3H1cGu_tR4dxjMxLEeh4CCtAeScDZCKNbOEsqhTLIZqUQAgYrGghsypeDdNHEmjzhP76XzbEeE-oQHZlpWVEANjp_Yvg-lkSvHpNR4v7mLZqK_d4Raaha9rYxNeLbheOClFYbE3P7A6d8ZuucAWF_pysZ0zYb6UCXPdzQE841KSzn5364WTMRwVeLjcdzv28fnRuNgTgmBvuTHIq19YtR5xGAHsCXN79BYqaA5KOuD3wgMMsY" width="1024"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
 <div class="absolute bottom-6 left-6 right-6">
 <span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">TEXTURE</span>
@@ -784,13 +782,13 @@
 <!-- ========================================================================= -->
 <!-- 7. CHEF SECTION (CRAFTED WITH INTENTION)                                  -->
 <!-- ========================================================================= -->
-<section class="scene-section py-24 bg-surface-container relative" data-scene="chef" id="chef">
+<section class="gpu-reveal py-24 bg-surface-container relative" data-scene="chef" id="chef">
 <div class="max-w-7xl mx-auto px-6 lg:px-12">
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
 <!-- Chef Portrait with Warm Teak Frame -->
-<div class="lg:col-span-5 relative layer-float-card">
+<div class="lg:col-span-5 relative">
 <div class="relative z-10 rounded-xl overflow-hidden shadow-2xl bg-surface-container-low aspect-[3/4] lux-rim-glow">
-<img alt="Executive Head Chef Arjun Mehra" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1UIxEnK5eO1EYP3H1_9knmqYwnIKXo-03wZcsXOAOEcUuQCv4Jrq_l9EwLJ5jkaTbp39XzdpfulX7iys9xb3ogup-sewC0rQxUvmR60I5e2EDuPmyYV8EiUFgcPb1wstpavIUBGV-ucPyD-8EAyX5llxeIlNMTNL_ADXTkke27Q9UqdXDzShc_ZAeiPqJxY6vOoqoiEZuYIbIaH_E_tVPa6-L4kxcQovflziomdnSTbZjOSIc8R3264pGaW"/>
+<img alt="Executive Head Chef Arjun Mehra" class="w-full h-full object-cover" decoding="async" height="1200" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1UIxEnK5eO1EYP3H1_9knmqYwnIKXo-03wZcsXOAOEcUuQCv4Jrq_l9EwLJ5jkaTbp39XzdpfulX7iys9xb3ogup-sewC0rQxUvmR60I5e2EDuPmyYV8EiUFgcPb1wstpavIUBGV-ucPyD-8EAyX5llxeIlNMTNL_ADXTkke27Q9UqdXDzShc_ZAeiPqJxY6vOoqoiEZuYIbIaH_E_tVPa6-L4kxcQovflziomdnSTbZjOSIc8R3264pGaW" width="896"/>
 <div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
 <div class="absolute bottom-6 left-6 right-6">
 <span class="font-label-caps text-[10px] tracking-[0.25em] text-primary">EXECUTIVE CHEF</span>
@@ -834,9 +832,9 @@
 </div>
 </section>
 <!-- ========================================================================= -->
-<!-- 8. RESERVATION SECTION (PREMIUM INTERACTIVE BOOKING CTA)                 -->
+<!-- 8. RESERVATION SECTION (PREMIUM BOOKING CTA)                              -->
 <!-- ========================================================================= -->
-<section class="scene-section py-24 bg-surface-container-lowest relative" data-scene="reservation" id="reservation">
+<section class="gpu-reveal py-24 bg-surface-container-lowest relative" data-scene="reservation" id="reservation">
 <div class="max-w-4xl mx-auto px-6 lg:px-12">
 <!-- Section Intro -->
 <div class="text-center space-y-4 mb-14">
@@ -850,7 +848,7 @@
         </p>
 </div>
 <!-- Booking Card Container -->
-<div class="p-8 md:p-12 rounded-2xl bg-surface-container shadow-2xl relative overflow-hidden lux-rim-glow layer-float-card">
+<div class="p-8 md:p-12 rounded-2xl bg-surface-container shadow-2xl relative overflow-hidden lux-rim-glow">
 <div class="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
 <form class="space-y-8 relative z-10" id="reservation-form" onsubmit="event.preventDefault(); handleReservationSubmit();">
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -923,7 +921,7 @@
 <!-- ========================================================================= -->
 <!-- 9. LOCATION & DETAILS                                                     -->
 <!-- ========================================================================= -->
-<section class="scene-section py-24 bg-surface-container relative" data-scene="location" id="location">
+<section class="gpu-reveal py-24 bg-surface-container relative" data-scene="location" id="location">
 <div class="max-w-7xl mx-auto px-6 lg:px-12">
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 <!-- Contact and Logistics Card -->
@@ -974,10 +972,10 @@
 </a>
 </div>
 </div>
-<!-- Styled Dark Interactive Map Container -->
+<!-- Styled Dark Map Mockup Container -->
 <div class="lg:col-span-7">
 <div class="relative w-full h-[450px] rounded-2xl overflow-hidden shadow-2xl bg-surface-container-lowest flex items-center justify-center lux-rim-glow" data-location="Indiranagar, Bangalore, Karnataka, India">
-<img alt="Location Map Ambient Backdrop" class="absolute inset-0 w-full h-full object-cover opacity-25 filter grayscale contrast-125" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO"/>
+<img alt="Location Map Ambient Backdrop" class="absolute inset-0 w-full h-full object-cover opacity-25 filter grayscale contrast-125" decoding="async" height="768" loading="lazy" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO" width="1376"/>
 <div class="absolute inset-0 bg-surface-container-lowest/80 backdrop-blur-sm"></div>
 <!-- Map Mockup Graphic -->
 <div class="relative z-10 flex flex-col items-center text-center p-8 max-w-sm">
@@ -998,185 +996,36 @@
 </div>
 </section>
 <!-- ========================================================================= -->
-<!-- INLINE CLIENT INTERACTIONS: 3D Camera Engine, Parallax, Tabs, Form       -->
+<!-- ULTRA-LIGHTWEIGHT EVENT LOGIC: IntersectionObserver + UI Tabs            -->
+<!-- Zero scroll-hijacking, zero requestAnimationFrame continuous loops       -->
 <!-- ========================================================================= -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // -------------------------------------------------------------
-      // 1. CINEMATIC 3D CAMERA SCROLL ENGINE (Between Adjacent Sections)
-      // -------------------------------------------------------------
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const scenes = Array.from(document.querySelectorAll('.scene-section'));
-      
-      if (!prefersReducedMotion && scenes.length > 0) {
-        let isTicking = false;
-        
-        function update3DCamera() {
-          const viewportHeight = window.innerHeight;
-          const scrollY = window.scrollY;
+      // 1. GPU-Friendly IntersectionObserver Reveal (Runs once per section)
+      const revealElements = document.querySelectorAll('.gpu-reveal');
+      if ('IntersectionObserver' in window) {
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px 0px -8% 0px',
+          threshold: 0.1
+        };
 
-          scenes.forEach((scene, index) => {
-            const rect = scene.getBoundingClientRect();
-            // Calculate progress through viewport (-1 when above, 0 when centered, 1 when below)
-            const sceneCenter = rect.top + rect.height / 2;
-            const screenCenter = viewportHeight / 2;
-            const deltaNorm = (sceneCenter - screenCenter) / (viewportHeight * 0.9);
-            
-            // Subtle mobile attenuation for angle and displacement
-            const isMobile = window.innerWidth < 768;
-            const maxTilt = isMobile ? 2.5 : 4.5;
-            const maxZ = isMobile ? 120 : 200;
-
-            if (deltaNorm > 1.2 || deltaNorm < -1.2) {
-              // Far out of viewport - dormant state
-              scene.style.transform = deltaNorm < -1.2 
-                ? `translate3d(0, -25px, -${maxZ}px) scale(0.93) rotateX(${maxTilt}deg)`
-                : `translate3d(0, 25px, 60px) scale(0.95) rotateX(-${maxTilt * 0.5}deg)`;
-              scene.style.opacity = '0.35';
-              scene.style.filter = 'blur(1.5px) brightness(0.75)';
-            } else if (deltaNorm < -0.1) {
-              // Outgoing section (scrolling past top)
-              const factor = Math.min(1, Math.abs(deltaNorm + 0.1));
-              const tz = -factor * maxZ;
-              const scale = 1 - (factor * 0.07);
-              const rotX = factor * maxTilt;
-              const rotY = factor * -0.8;
-              const opac = 1 - (factor * 0.55);
-              const blur = factor * 1.5;
-              const bright = 1 - (factor * 0.22);
-              
-              scene.style.transform = `translate3d(0, ${-factor * 32}px, ${tz}px) scale(${scale}) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-              scene.style.opacity = opac.toFixed(3);
-              scene.style.filter = `blur(${blur.toFixed(1)}px) brightness(${bright.toFixed(2)})`;
-            } else if (deltaNorm > 0.1) {
-              // Incoming section (emerging from bottom depth)
-              const factor = Math.min(1, deltaNorm - 0.1);
-              const tz = (1 - factor) * 40 - (factor * 30);
-              const scale = 0.95 + (1 - factor) * 0.05;
-              const rotX = -factor * (maxTilt * 0.7);
-              const opac = 1 - (factor * 0.45);
-              const blur = factor * 0.8;
-              const bright = 0.92 + (1 - factor) * 0.08;
-              
-              scene.style.transform = `translate3d(0, ${factor * 28}px, ${tz}px) scale(${scale}) rotateX(${rotX}deg)`;
-              scene.style.opacity = opac.toFixed(3);
-              scene.style.filter = `blur(${blur.toFixed(1)}px) brightness(${bright.toFixed(2)})`;
-            } else {
-              // Settle in camera focus (heroic center)
-              scene.style.transform = 'translate3d(0, 0px, 0px) scale(1) rotateX(0deg) rotateY(0deg)';
-              scene.style.opacity = '1';
-              scene.style.filter = 'blur(0px) brightness(1)';
-            }
-
-            // Layered parallax interior elements
-            const floatingCard = scene.querySelector('.layer-float-card');
-            if (floatingCard) {
-              const cardOffset = -deltaNorm * 22;
-              floatingCard.style.transform = `translateY(${cardOffset}px)`;
+        const revealObserver = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              obs.unobserve(entry.target); // Free memory immediately
             }
           });
+        }, observerOptions);
 
-          isTicking = false;
-        }
-
-        window.addEventListener('scroll', () => {
-          if (!isTicking) {
-            window.requestAnimationFrame(update3DCamera);
-            isTicking = true;
-          }
-        }, { passive: true });
-
-        // Initial setup run
-        update3DCamera();
+        revealElements.forEach(el => revealObserver.observe(el));
+      } else {
+        // Fallback for older browsers
+        revealElements.forEach(el => el.classList.add('is-visible'));
       }
 
-      // -------------------------------------------------------------
-      // 2. SUBTLE GOLDEN EMBER BOKEH DRIFT IN VIEWPORT BACKGROUND
-      // -------------------------------------------------------------
-      const canvas = document.getElementById('ember-canvas');
-      if (canvas && !prefersReducedMotion) {
-        const ctx = canvas.getContext('2d');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        window.addEventListener('resize', () => {
-          width = canvas.width = window.innerWidth;
-          height = canvas.height = window.innerHeight;
-        });
-
-        const particles = Array.from({ length: 24 }, () => ({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 2 + 0.8,
-          speedY: Math.random() * 0.45 + 0.25,
-          speedX: (Math.random() - 0.5) * 0.25,
-          alpha: Math.random() * 0.4 + 0.15,
-          baseAlpha: Math.random() * 0.35 + 0.15
-        }));
-
-        function renderEmbers() {
-          ctx.clearRect(0, 0, width, height);
-          particles.forEach(p => {
-            p.y -= p.speedY;
-            p.x += p.speedX;
-            if (p.y < -10) {
-              p.y = height + 10;
-              p.x = Math.random() * width;
-            }
-            if (p.x < -10) p.x = width + 10;
-            if (p.x > width + 10) p.x = -10;
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(242, 202, 80, ${p.alpha})`;
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = 'rgba(212, 175, 55, 0.4)';
-            ctx.fill();
-          });
-          requestAnimationFrame(renderEmbers);
-        }
-        renderEmbers();
-      }
-
-      // -------------------------------------------------------------
-      // 3. Subtle 3D Card Hover Tilt for Signature Dishes
-      // -------------------------------------------------------------
-      const tiltCards = document.querySelectorAll('.tilt-card');
-      tiltCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left - rect.width / 2;
-          const y = e.clientY - rect.top - rect.height / 2;
-          const rotateX = (-y / rect.height) * 10;
-          const rotateY = (x / rect.width) * 10;
-          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)';
-        });
-      });
-
-      // -------------------------------------------------------------
-      // 4. Hero Interactive Subtle Perspective on Mouse Move
-      // -------------------------------------------------------------
-      const heroSection = document.getElementById('hero');
-      const hero3DCard = document.getElementById('hero-tilt-card');
-      if (heroSection && hero3DCard) {
-        heroSection.addEventListener('mousemove', (e) => {
-          const { clientX, clientY } = e;
-          const xOffset = (clientX / window.innerWidth - 0.5) * 14;
-          const yOffset = (clientY / window.innerHeight - 0.5) * 14;
-          hero3DCard.style.transform = `perspective(1200px) rotateY(${xOffset}deg) rotateX(${-yOffset}deg)`;
-        });
-        heroSection.addEventListener('mouseleave', () => {
-          hero3DCard.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg)';
-        });
-      }
-
-      // -------------------------------------------------------------
-      // 5. Menu Category Filter Tabs
-      // -------------------------------------------------------------
+      // 2. Menu Category Filter Tabs
       const menuTabs = document.querySelectorAll('.menu-tab-btn');
       const menuRows = document.querySelectorAll('.menu-item-row');
 
@@ -1200,9 +1049,7 @@
         });
       });
 
-      // -------------------------------------------------------------
-      // 6. Reservation Time Slot Selector
-      // -------------------------------------------------------------
+      // 3. Reservation Time Slot Selector
       const slotBtns = document.querySelectorAll('.slot-btn');
       slotBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1216,7 +1063,7 @@
       });
     });
 
-    // 7. Reservation Form Feedback Handler
+    // 4. Reservation Form Feedback Handler
     function handleReservationSubmit() {
       const statusToast = document.getElementById('reservation-status');
       const submitBtn = document.getElementById('res-submit-btn');
@@ -1230,7 +1077,7 @@
           submitBtn.innerText = 'TABLE CONFIRMED';
           submitBtn.classList.replace('bg-primary', 'bg-emerald-600');
         }
-      }, 750);
+      }, 500);
     }
   </script>
-</div></main><aside class="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-3 bg-surface-container-low/90 backdrop-blur-xl px-5 py-3 rounded-full shadow-[0_12px_32px_-4px_rgba(0,0,0,0.8),0_0_24px_1px_rgba(212,175,55,0.1)]"><a class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors font-label-caps text-label-caps tracking-widest" data-path="reservations" href="#reservation"><span class="material-symbols-outlined text-primary text-base">table_restaurant</span><span>RESERVE SALON</span></a><span class="h-4 w-[1px] bg-outline-variant/60"></span><a class="flex items-center gap-2 text-on-surface-variant hover:text-secondary transition-colors font-label-caps text-label-caps" href="tel:+919876543210"><span class="material-symbols-outlined text-secondary text-base">room_service</span><span>CONCIERGE</span></a></aside><div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/90 backdrop-blur-2xl px-6 py-3.5 flex items-center justify-between shadow-[0_-8px_24px_rgba(0,0,0,0.7)]"><div class="flex flex-col"><span class="font-label-caps text-[9px] tracking-widest text-outline">TASTING MENU</span><span class="font-headline-sm text-title-md text-on-surface">Autumn Degustation</span></div><a class="px-5 py-2.5 rounded bg-primary text-on-primary font-label-caps text-label-caps tracking-wider transition-colors" data-path="reservations" href="#reservation">RESERVE</a></div><footer class="w-full bg-surface-container-lowest text-on-surface relative"><div class="max-w-7xl mx-auto px-6 lg:px-12 pt-space-xl pb-space-lg"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-y-12 gap-x-gutter mb-space-xl"><div class="lg:col-span-2 space-y-4"><div class="flex items-center gap-3"><img alt="Ember &amp; Spice Logo" class="h-9 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XENLs68zp7hVduPuUUSAF0MGIUx5yV8CdereVgrReaq2UTJyynjmzvlpoBHuSm4zu4WYTgfp0Gl9xtyTBnK3Nv1z3pvJ8CPLPWuDMdM9wwr1RvOQP71NjfmRXHxgHS1TfS9hg-Zsdgvn6woxNVDMFvlR92u0NE2rO1HzUiSPNn8HZ6KNViMrroRHfvnSIOjQOuwi1uEcrCgxiBG4uI_k39FxJTNuElOazwNQikWWi7PQnbXghgUh2pGZmK"/><span class="font-headline-sm text-headline-sm tracking-wide text-on-surface">EMBER &amp; SPICE</span></div><p class="font-headline-sm text-title-md italic text-secondary-fixed-dim max-w-sm">Where Every Plate Tells a Story.</p><p class="font-body-sm text-body-sm text-outline max-w-md">Contemporary Indian haute cuisine elevated through indigenous heirloom grains, fire-chiseled spices, and ritual gastronomy in the heart of Bangalore.</p></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">DINING HOURS</h3><div class="space-y-1 font-body-sm text-body-sm text-on-surface-variant"><p class="text-on-surface font-medium">Lunch Degustation</p><p>Tue – Sun: 12:30 PM – 3:30 PM</p></div><div class="space-y-1 font-body-sm text-body-sm text-on-surface-variant pt-2"><p class="text-on-surface font-medium">Dinner Salon</p><p>Tue – Sun: 7:00 PM – 11:30 PM</p><p class="text-outline text-xs">Closed on Mondays</p></div></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">CONTACT &amp; SALONS</h3><div class="space-y-1.5 font-body-sm text-body-sm text-on-surface-variant"><p class="text-on-surface font-medium">Indiranagar, Bangalore</p><p>100 Feet Road, HAL 2nd Stage</p><p>Karnataka 560038</p></div><div class="space-y-1 pt-2 font-body-sm text-body-sm"><p><a class="text-on-surface-variant hover:text-primary transition-colors" href="tel:+919876543210">+91 98765 43210</a></p><p><a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:hello@emberandspice.in">hello@emberandspice.in</a></p></div></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">CONNECTED</h3><p class="font-body-sm text-body-sm text-outline">Follow our culinary journeys and seasonal releases.</p><div class="flex flex-col space-y-2 pt-1"><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm text-secondary">photo_camera</span>Instagram</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm text-secondary">public</span>Facebook</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" data-path="reservations" href="#reservation"><span class="material-symbols-outlined text-sm text-secondary">concierge</span>Private Dining Inquiries</a></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-outline"><p>© 2026 Ember &amp; Spice. All rights reserved.</p><div class="flex items-center gap-6 font-label-caps text-label-caps"><a class="text-outline hover:text-on-surface transition-colors" href="#">PRIVACY POLICY</a><a class="text-outline hover:text-on-surface transition-colors" href="#">TERMS OF EXPERIENCE</a><a class="text-outline hover:text-on-surface transition-colors" href="#">VALET PARKING</a></div></div></div></footer></body></html>
+</div></main><aside class="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-3 bg-surface-container-low/90 backdrop-blur-xl px-5 py-3 rounded-full shadow-[0_12px_32px_-4px_rgba(0,0,0,0.8),0_0_24px_1px_rgba(212,175,55,0.1)]"><a class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors font-label-caps text-label-caps tracking-widest" data-path="reservations" href="#reservation"><span class="material-symbols-outlined text-primary text-base">table_restaurant</span><span>RESERVE SALON</span></a><span class="h-4 w-[1px] bg-outline-variant/60"></span><a class="flex items-center gap-2 text-on-surface-variant hover:text-secondary transition-colors font-label-caps text-label-caps" href="tel:+919876543210"><span class="material-symbols-outlined text-secondary text-base">room_service</span><span>CONCIERGE</span></a></aside><div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/90 backdrop-blur-2xl px-6 py-3.5 flex items-center justify-between shadow-[0_-8px_24px_rgba(0,0,0,0.7)]"><div class="flex flex-col"><span class="font-label-caps text-[9px] tracking-widest text-outline">TASTING MENU</span><span class="font-headline-sm text-title-md text-on-surface">Autumn Degustation</span></div><a class="px-5 py-2.5 rounded bg-primary text-on-primary font-label-caps text-label-caps tracking-wider transition-colors" data-path="reservations" href="#reservation">RESERVE</a></div><footer class="w-full bg-surface-container-lowest text-on-surface relative"><div class="max-w-7xl mx-auto px-6 lg:px-12 pt-space-xl pb-space-lg"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-y-12 gap-x-gutter mb-space-xl"><div class="lg:col-span-2 space-y-4"><div class="flex items-center gap-3"><img alt="Ember &amp; Spice Logo" class="h-9 w-auto object-contain" height="36" src="https://lh3.googleusercontent.com/aida/AEtjO1XENLs68zp7hVduPuUUSAF0MGIUx5yV8CdereVgrReaq2UTJyynjmzvlpoBHuSm4zu4WYTgfp0Gl9xtyTBnK3Nv1z3pvJ8CPLPWuDMdM9wwr1RvOQP71NjfmRXHxgHS1TfS9hg-Zsdgvn6woxNVDMFvlR92u0NE2rO1HzUiSPNn8HZ6KNViMrroRHfvnSIOjQOuwi1uEcrCgxiBG4uI_k39FxJTNuElOazwNQikWWi7PQnbXghgUh2pGZmK" width="144"/><span class="font-headline-sm text-headline-sm tracking-wide text-on-surface">EMBER &amp; SPICE</span></div><p class="font-headline-sm text-title-md italic text-secondary-fixed-dim max-w-sm">Where Every Plate Tells a Story.</p><p class="font-body-sm text-body-sm text-outline max-w-md">Contemporary Indian haute cuisine elevated through indigenous heirloom grains, fire-chiseled spices, and ritual gastronomy in the heart of Bangalore.</p></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">DINING HOURS</h3><div class="space-y-1 font-body-sm text-body-sm text-on-surface-variant"><p class="text-on-surface font-medium">Lunch Degustation</p><p>Tue – Sun: 12:30 PM – 3:30 PM</p></div><div class="space-y-1 font-body-sm text-body-sm text-on-surface-variant pt-2"><p class="text-on-surface font-medium">Dinner Salon</p><p>Tue – Sun: 7:00 PM – 11:30 PM</p><p class="text-outline text-xs">Closed on Mondays</p></div></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">CONTACT &amp; SALONS</h3><div class="space-y-1.5 font-body-sm text-body-sm text-on-surface-variant"><p class="text-on-surface font-medium">Indiranagar, Bangalore</p><p>100 Feet Road, HAL 2nd Stage</p><p>Karnataka 560038</p></div><div class="space-y-1 pt-2 font-body-sm text-body-sm"><p><a class="text-on-surface-variant hover:text-primary transition-colors" href="tel:+919876543210">+91 98765 43210</a></p><p><a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:hello@emberandspice.in">hello@emberandspice.in</a></p></div></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">CONNECTED</h3><p class="font-body-sm text-body-sm text-outline">Follow our culinary journeys and seasonal releases.</p><div class="flex flex-col space-y-2 pt-1"><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm text-secondary">photo_camera</span>Instagram</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm text-secondary">public</span>Facebook</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" data-path="reservations" href="#reservation"><span class="material-symbols-outlined text-sm text-secondary">concierge</span>Private Dining Inquiries</a></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-outline"><p>© 2026 Ember &amp; Spice. All rights reserved.</p><div class="flex items-center gap-6 font-label-caps text-label-caps"><a class="text-outline hover:text-on-surface transition-colors" href="#">PRIVACY POLICY</a><a class="text-outline hover:text-on-surface transition-colors" href="#">TERMS OF EXPERIENCE</a><a class="text-outline hover:text-on-surface transition-colors" href="#">VALET PARKING</a></div></div></div></footer></body></html>
