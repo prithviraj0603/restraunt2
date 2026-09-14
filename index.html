@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>
+@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}
+::-webkit-scrollbar{display:none;}
+
+/* 3D Cinematic Camera Viewport & Spatial Staging */
+#cinema-camera-viewport {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+.scene-section {
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center center;
+  position: relative;
+}
+
+/* Layered 3D parallax elements inside scenes */
+.layer-float-hero {
+  will-change: transform;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.layer-float-card {
+  will-change: transform;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Floating Ember Particles Canvas Overlay */
+#ember-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0.75;
+}
+
+/* Virtual Camera Spatial Depth States */
+.camera-incoming {
+  transform: translate3d(0, 32px, 60px) scale(0.95) rotateX(2.5deg);
+  opacity: 0.55;
+  filter: blur(0.5px) brightness(0.92);
+}
+
+.camera-settled {
+  transform: translate3d(0, 0, 0px) scale(1) rotateX(0deg) rotateY(0deg);
+  opacity: 1;
+  filter: blur(0px) brightness(1);
+}
+
+.camera-outgoing {
+  transform: translate3d(0, -36px, -160px) scale(0.93) rotateX(4deg) rotateY(-0.8deg);
+  opacity: 0.5;
+  filter: blur(1.2px) brightness(0.78);
+}
+
+/* Luxury Rim Glow on cards */
+.lux-rim-glow {
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.15), 0 20px 40px -15px rgba(0,0,0,0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-section, .layer-float-hero, .layer-float-card {
+    transition: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+  #ember-canvas {
+    display: none;
+  }
+}
+</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container-low": "#1d1b1a",
+          "surface-container-lowest": "#100e0d",
+          "on-surface-variant": "#d0c5af",
+          "on-error-container": "#ffdad6",
+          "surface-container": "#221f1e",
+          "outline": "#99907c",
+          "on-error": "#690005",
+          "on-primary-container": "#554300",
+          "outline-variant": "#4d4635",
+          "surface-bright": "#3c3837",
+          "on-primary-fixed": "#241a00",
+          "inverse-primary": "#735c00",
+          "tertiary-container": "#e1a67e",
+          "error": "#ffb4ab",
+          "tertiary": "#ffc197",
+          "on-tertiary-fixed-variant": "#663d1d",
+          "on-secondary-fixed": "#291800",
+          "on-secondary-fixed-variant": "#5f4111",
+          "surface-dim": "#151312",
+          "surface": "#151312",
+          "secondary-fixed-dim": "#ecbf84",
+          "error-container": "#93000a",
+          "primary-fixed": "#ffe088",
+          "tertiary-fixed": "#ffdcc6",
+          "primary-fixed-dim": "#e9c349",
+          "primary-container": "#d4af37",
+          "on-tertiary-container": "#643b1b",
+          "on-primary-fixed-variant": "#574500",
+          "background": "#151312",
+          "on-surface": "#e8e1df",
+          "secondary-fixed": "#ffddb4",
+          "on-tertiary": "#4c2709",
+          "primary": "#f2ca50",
+          "on-background": "#e8e1df",
+          "tertiary-fixed-dim": "#f7ba90",
+          "on-tertiary-fixed": "#301400",
+          "surface-container-highest": "#373433",
+          "on-primary": "#3c2f00",
+          "surface-variant": "#373433",
+          "secondary": "#ecbf84",
+          "secondary-container": "#624313",
+          "on-secondary-container": "#ddb177",
+          "surface-container-high": "#2c2928",
+          "on-secondary": "#452b00",
+          "surface-tint": "#e9c349",
+          "inverse-on-surface": "#33302e",
+          "inverse-surface": "#e8e1df"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "space-lg": "2.5rem",
+          "margin": "4rem",
+          "space-xl": "4.5rem",
+          "space-sm": "0.75rem",
+          "gutter": "1.5rem",
+          "gutter-mobile": "1rem",
+          "space-md": "1.5rem",
+          "margin-mobile": "1.5rem",
+          "space-xs": "0.375rem"
+        },
+        "fontFamily": {
+          "body-md": [
+            "Plus Jakarta Sans"
+          ],
+          "headline-sm": [
+            "Playfair Display"
+          ],
+          "title-md": [
+            "Plus Jakarta Sans"
+          ],
+          "body-lg": [
+            "Plus Jakarta Sans"
+          ],
+          "headline-lg": [
+            "Playfair Display"
+          ],
+          "label-caps": [
+            "Plus Jakarta Sans"
+          ],
+          "label-sm": [
+            "Plus Jakarta Sans"
+          ],
+          "headline-md": [
+            "Playfair Display"
+          ],
+          "title-lg": [
+            "Plus Jakarta Sans"
+          ],
+          "display-hero-mobile": [
+            "Playfair Display"
+          ],
+          "display-hero": [
+            "Playfair Display"
+          ],
+          "headline-lg-mobile": [
+            "Playfair Display"
+          ],
+          "body-sm": [
+            "Plus Jakarta Sans"
+          ]
+        },
+        "fontSize": {
+          "body-md": [
+            "15px",
+            {
+              "lineHeight": "24px",
+              "fontWeight": "300"
+            }
+          ],
+          "headline-sm": [
+            "24px",
+            {
+              "lineHeight": "32px",
+              "fontWeight": "500"
+            }
+          ],
+          "title-md": [
+            "16px",
+            {
+              "lineHeight": "24px",
+              "letterSpacing": "0.02em",
+              "fontWeight": "500"
+            }
+          ],
+          "body-lg": [
+            "17px",
+            {
+              "lineHeight": "28px",
+              "fontWeight": "300"
+            }
+          ],
+          "headline-lg": [
+            "44px",
+            {
+              "lineHeight": "54px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "400"
+            }
+          ],
+          "label-caps": [
+            "11px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.2em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-sm": [
+            "12px",
+            {
+              "lineHeight": "16px",
+              "letterSpacing": "0.05em",
+              "fontWeight": "500"
+            }
+          ],
+          "headline-md": [
+            "32px",
+            {
+              "lineHeight": "40px",
+              "fontWeight": "500"
+            }
+          ],
+          "title-lg": [
+            "20px",
+            {
+              "lineHeight": "28px",
+              "letterSpacing": "0.01em",
+              "fontWeight": "600"
+            }
+          ],
+          "display-hero-mobile": [
+            "38px",
+            {
+              "lineHeight": "46px",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "400"
+            }
+          ],
+          "display-hero": [
+            "64px",
+            {
+              "lineHeight": "76px",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "400"
+            }
+          ],
+          "headline-lg-mobile": [
+            "30px",
+            {
+              "lineHeight": "38px",
+              "fontWeight": "400"
+            }
+          ],
+          "body-sm": [
+            "13px",
+            {
+              "lineHeight": "20px",
+              "fontWeight": "400"
+            }
+          ]
+        }
+      },
+    },
+  }</script></head><body class="bg-background font-body-md text-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container min-h-screen flex flex-col"><canvas id="ember-canvas"></canvas><header class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.4)]"><div class="h-20 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between"><a class="flex items-center gap-space-sm group text-left" data-path="home" href="#"><img alt="Ember &amp; Spice Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XENLs68zp7hVduPuUUSAF0MGIUx5yV8CdereVgrReaq2UTJyynjmzvlpoBHuSm4zu4WYTgfp0Gl9xtyTBnK3Nv1z3pvJ8CPLPWuDMdM9wwr1RvOQP71NjfmRXHxgHS1TfS9hg-Zsdgvn6woxNVDMFvlR92u0NE2rO1HzUiSPNn8HZ6KNViMrroRHfvnSIOjQOuwi1uEcrCgxiBG4uI_k39FxJTNuElOazwNQikWWi7PQnbXghgUh2pGZmK"/><div class="flex flex-col"><span class="font-headline-sm text-title-lg tracking-wider text-on-surface group-hover:text-primary transition-colors">EMBER &amp; SPICE</span><span class="font-label-caps text-label-caps tracking-[0.25em] text-outline text-[9px] -mt-1">BANGALORE</span></div></a><nav class="hidden xl:flex items-center gap-8" data-active-classes="text-primary font-semibold"><a aria-current="page" class="transition-colors py-1 text-primary font-semibold" data-path="home" href="#hero">Home</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="our-story" href="#story">Our Story</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="menu" href="#menu">Menu</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="experience" href="#experience">Experience</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="gallery" href="#gallery">Gallery</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="chef" href="#chef">Chef</a><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-colors py-1" data-path="contact" href="#location">Contact</a></nav><div class="flex items-center gap-space-md"><a class="hidden md:inline-flex items-center justify-center px-6 py-2.5 rounded bg-transparent text-primary hover:bg-primary hover:text-on-primary font-label-caps text-label-caps tracking-[0.2em] shadow-[inset_0_0_0_1px_rgba(212,175,55,0.4)] hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] transition-all duration-300" data-path="reservations" href="#reservation">BOOK A TABLE</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-background flex-1 relative"><div class="flex flex-col w-full text-on-surface overflow-x-hidden selection:bg-primary selection:text-on-primary" id="cinema-camera-viewport">
+<!-- ========================================================================= -->
+<!-- 1. CINEMATIC 3D HERO SECTION                                              -->
+<!-- ========================================================================= -->
+<section class="scene-section relative min-h-[92vh] -mt-20 pt-24 pb-16 flex items-center justify-center overflow-hidden" data-scene="hero" id="hero">
+<!-- Atmospheric Background with Vignette and Parallax Layer -->
+<div class="absolute inset-0 z-0 scale-105 transition-transform duration-1000 ease-out" id="hero-bg-zoom" style="background-image: url('https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO'); background-position: center; background-size: cover;"></div>
+<div class="absolute inset-0 z-0 bg-gradient-to-r from-surface-container-lowest via-surface-container-lowest/80 to-transparent"></div>
+<div class="absolute inset-0 z-0 bg-gradient-to-t from-background via-transparent to-surface-container-lowest/70"></div>
+<div class="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.08)_0%,transparent_70%)]"></div>
+<div class="relative z-10 max-w-7xl w-full mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center pt-8">
+<!-- Left Narrative Typography -->
+<div class="lg:col-span-7 flex flex-col items-start space-y-6">
+<div class="inline-flex items-center gap-2 px-3.5 py-1 rounded bg-surface-container/60 backdrop-blur-md shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+<span class="font-label-caps text-label-caps text-secondary-fixed tracking-[0.25em]">EST. 2024 · INDIRANAGAR, BANGALORE</span>
+</div>
+<h1 class="font-display-hero text-display-hero-mobile md:text-display-hero leading-[1.05] tracking-tight font-light text-on-surface">
+          Where Every Plate <br/>
+<span class="italic font-normal bg-gradient-to-r from-secondary-fixed via-primary to-tertiary bg-clip-text text-transparent">Tells a Story.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl font-light">
+          Modern Indian cuisine crafted with ritual, imagination, and sacred fire. Honoring ancestral royal recipes reimagined for Bangalore's discerning palate.
+        </p>
+<div class="flex flex-wrap items-center gap-4 pt-4">
+<a class="px-8 py-3.5 rounded bg-primary text-on-primary font-label-caps text-label-caps tracking-[0.2em] shadow-lg hover:bg-secondary transition-all duration-300" href="#menu">
+            EXPLORE MENU
+          </a>
+<a class="px-8 py-3.5 rounded bg-surface-container-high/40 backdrop-blur-md text-on-surface font-label-caps text-label-caps tracking-[0.2em] hover:bg-surface-container-highest transition-all duration-300" href="#reservation">
+            BOOK A TABLE
+          </a>
+</div>
+<!-- Awards / Micro Accolades -->
+<div class="pt-6 flex items-center gap-8 text-outline">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary text-lg">star</span>
+<span class="font-label-sm text-label-sm tracking-widest text-on-surface-variant">MICHELIN GUIDE RECOGNIZED</span>
+</div>
+<span class="h-4 w-[1px] bg-outline-variant"></span>
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-secondary text-lg">local_fire_department</span>
+<span class="font-label-sm text-label-sm tracking-widest text-on-surface-variant">ANCIENT SIGRI ROASTS</span>
+</div>
+</div>
+</div>
+<!-- Right 3D Food Showcase (Layered Depth) -->
+<div class="lg:col-span-5 relative flex items-center justify-center layer-float-hero" id="hero-3d-wrapper">
+<div class="relative w-full max-w-[420px] aspect-square group" id="hero-tilt-card" style="perspective: 1200px; transform-style: preserve-3d;">
+<!-- Ambient Glow Orb Behind Plate -->
+<div class="absolute -inset-4 rounded-full bg-primary/15 blur-3xl transition-opacity duration-700 pointer-events-none"></div>
+<!-- Rotated Accent Layer -->
+<div class="absolute inset-2 rounded-xl bg-surface-container-low/60 rotate-2 backdrop-blur-md shadow-2xl transition-transform duration-500 ease-out group-hover:rotate-1"></div>
+<!-- Main Signature Showcase Canvas -->
+<div class="relative h-full w-full rounded-xl overflow-hidden shadow-[0_24px_50px_-12px_rgba(0,0,0,0.9)] bg-surface-container-lowest flex flex-col justify-end p-6 lux-rim-glow">
+<img alt="Smoked Tandoori Paneer Signature Creation" class="absolute inset-0 w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/30 to-transparent"></div>
+<!-- Floating Pill Tag -->
+<div class="relative z-10 flex items-center justify-between">
+<div>
+<span class="font-label-caps text-[10px] tracking-[0.25em] text-primary">SIGNATURE PRESENTATION</span>
+<p class="font-headline-sm text-title-lg text-on-surface">Smoked Tandoori Paneer</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Charred malai, saffron swirl &amp; edible 24k gold leaf</p>
+</div>
+<div class="h-11 w-11 rounded-full bg-surface-container-highest/80 backdrop-blur-md flex items-center justify-center text-primary shadow-md">
+<span class="font-label-caps text-label-caps font-semibold">₹795</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Scroll Indicator -->
+<a class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1 text-outline hover:text-primary transition-colors cursor-pointer group" href="#story">
+<span class="font-label-caps text-[10px] tracking-[0.3em] uppercase">SCROLL TO EXPLORE</span>
+<span class="material-symbols-outlined text-sm animate-bounce text-primary">south</span>
+</a>
+</section>
+<!-- ========================================================================= -->
+<!-- 2. OUR STORY (SPLIT-SCREEN WITH 3D DEPTH)                                 -->
+<!-- ========================================================================= -->
+<section class="scene-section relative py-24 bg-surface-container-lowest" data-scene="story" id="story">
+<div class="max-w-7xl mx-auto px-6 lg:px-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+<!-- Visual Column with Architectural Accents -->
+<div class="lg:col-span-6 relative layer-float-card">
+<div class="relative z-10 rounded-xl overflow-hidden shadow-2xl bg-surface-container-low aspect-[4/3] group lux-rim-glow">
+<img alt="Ember &amp; Spice Bangalore Dining Room" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
+<!-- Overlaid Recognition Badge -->
+<div class="absolute bottom-6 left-6 right-6 p-4 rounded bg-surface-container/90 backdrop-blur-xl shadow-xl flex items-center gap-4">
+<div class="w-12 h-12 rounded bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">workspace_premium</span>
+</div>
+<div>
+<span class="font-label-caps text-[10px] tracking-[0.25em] text-primary">EST. 2024</span>
+<p class="font-headline-sm text-title-md text-on-surface">MICHELIN GUIDE RECOGNIZED</p>
+<p class="font-body-sm text-body-sm text-outline">Sanctuary of Contemporary Indian Gastronomy</p>
+</div>
+</div>
+</div>
+<!-- Decorative Offset Card Backdrop -->
+<div class="absolute -top-4 -left-4 w-full h-full rounded-xl bg-surface-container -z-0 hidden md:block"></div>
+</div>
+<!-- Narrative Column -->
+<div class="lg:col-span-6 flex flex-col space-y-6">
+<div class="flex items-center gap-3">
+<span class="h-[1px] w-8 bg-primary"></span>
+<span class="font-label-caps text-label-caps text-primary tracking-[0.3em]">THE PHILOSOPHY</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-normal leading-tight">
+            A Modern Take on <br/><span class="italic text-secondary">Indian Haute Cuisine</span>
+</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant font-light leading-relaxed">
+            Rooted in royal regional kitchens and guided by contemporary culinary alchemy, Ember &amp; Spice honors ancestral cooking techniques while fearlessly redefining Indian fine dining.
+          </p>
+<p class="font-body-md text-body-md text-outline font-light leading-relaxed">
+            From the smoldering embers of our open-flame sigri to delicate saffron and cardamom reductions from Kashmir, each plate is an evocative story of terrain, memory, and high sensory craft in the heart of Bangalore.
+          </p>
+<!-- Stats / Highlights Row -->
+<div class="grid grid-cols-3 gap-4 pt-6 mt-4 bg-surface-container-low p-6 rounded-lg shadow-sm">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-primary font-normal">16+</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase mt-1">Heritage Spices</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-secondary font-normal">3</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase mt-1">Michelin Alum Chefs</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-primary font-normal">100%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider uppercase mt-1">Seasonal Farms</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 3. SIGNATURE DISHES (INTERACTIVE 3D PERSPECTIVE CARDS)                   -->
+<!-- ========================================================================= -->
+<section class="scene-section py-24 bg-surface-container relative" data-scene="signatures" id="signatures">
+<div class="max-w-7xl mx-auto px-6 lg:px-12">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="h-[1px] w-8 bg-primary"></span>
+<span class="font-label-caps text-label-caps text-primary tracking-[0.3em]">CULINARY MASTERWORKS</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Signature Creations</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-lg">A curated anthology of dishes that define our open kitchen and culinary philosophy.</p>
+</div>
+<div class="flex items-center gap-2 font-label-caps text-label-caps text-secondary cursor-default">
+<span class="material-symbols-outlined text-base">auto_awesome</span>
+<span>CHEF'S AUTUMN SELECTION</span>
+</div>
+</div>
+<!-- 4 Interactive 3D Perspective Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Dish Card 1 -->
+<div class="tilt-card group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col lux-rim-glow layer-float-card" style="perspective: 1000px; transition-delay: 40ms;">
+<div class="relative aspect-square overflow-hidden bg-surface-container-high">
+<img alt="Smoked Tandoori Paneer" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4"/>
+<span class="absolute top-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md font-label-caps text-label-caps text-primary shadow-sm">₹795</span>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+<div>
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-outline">TANDOOR &amp; CHARCOAL</span>
+<h3 class="font-headline-sm text-title-lg text-on-surface mt-1 group-hover:text-primary transition-colors">Smoked Tandoori Paneer</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 font-light">Charred malai paneer, saffron cream swirl, microgreens, and delicate edible 24k gold leaf garnish.</p>
+</div>
+<div class="pt-4 flex items-center justify-between text-secondary group-hover:text-primary transition-colors">
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Discover Pairing</span>
+<span class="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Dish Card 2 -->
+<div class="tilt-card group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col lux-rim-glow layer-float-card" style="perspective: 1000px; transition-delay: 80ms;">
+<div class="relative aspect-square overflow-hidden bg-surface-container-high">
+<img alt="Saffron Truffle Biryani" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AEtjO1VLV2Izrjc9_J4Ie26mvjE19BlIAqmYoJdqAiBmT5apzC01icT-c5i1Og3oMh6w7bTiQegSAD5u3b2P7mesVYP2HWDbLMfVJGBgVp1Tx23OTpgpLGsw5egYZ_x39UPJqQTVLZkTX9tlHRn3akfZ5s30uUiaUSJ3rrP-NUuJtIxUtlgVmCHPcjfB31naUvJaiElpm75b6OZ7sWKj_grfOQF3frOVuesk50hcL3i98ucFEcgEjh33Ul1cAbh0"/>
+<span class="absolute top-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md font-label-caps text-label-caps text-primary shadow-sm">₹1,250</span>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+<div>
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-outline">ROYAL DUM RICE</span>
+<h3 class="font-headline-sm text-title-lg text-on-surface mt-1 group-hover:text-primary transition-colors">Saffron Truffle Biryani</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 font-light">Fragrant aged basmati, Kashmiri saffron, autumn black truffle, caramelized shallots, and silver vark.</p>
+</div>
+<div class="pt-4 flex items-center justify-between text-secondary group-hover:text-primary transition-colors">
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Discover Pairing</span>
+<span class="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Dish Card 3 -->
+<div class="tilt-card group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col lux-rim-glow layer-float-card" style="perspective: 1000px; transition-delay: 120ms;">
+<div class="relative aspect-square overflow-hidden bg-surface-container-high">
+<img alt="Malai Mushroom Galouti" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AEtjO1Uz4CGMoA3H1cGu_tR4dxjMxLEeh4CCtAeScDZCKNbOEsqhTLIZqUQAgYrGghsypeDdNHEmjzhP76XzbEeE-oQHZlpWVEANjp_Yvg-lkSvHpNR4v7mLZqK_d4Raaha9rYxNeLbheOClFYbE3P7A6d8ZuucAWF_pysZ0zYb6UCXPdzQE841KSzn5364WTMRwVeLjcdzv28fnRuNgTgmBvuTHIq19YtR5xGAHsCXN79BYqaA5KOuD3wgMMsY"/>
+<span class="absolute top-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md font-label-caps text-label-caps text-primary shadow-sm">₹850</span>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+<div>
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-outline">HERITAGE SMALL PLATE</span>
+<h3 class="font-headline-sm text-title-lg text-on-surface mt-1 group-hover:text-primary transition-colors">Malai Mushroom Galouti</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 font-light">Wild forest mushrooms, delicate cashew emulsion, saffron crisp, and smoked rose butter medallion.</p>
+</div>
+<div class="pt-4 flex items-center justify-between text-secondary group-hover:text-primary transition-colors">
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Discover Pairing</span>
+<span class="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Dish Card 4 -->
+<div class="tilt-card group relative bg-surface-container-lowest rounded-xl overflow-hidden shadow-xl transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 flex flex-col lux-rim-glow layer-float-card" style="perspective: 1000px; transition-delay: 160ms;">
+<div class="relative aspect-square overflow-hidden bg-surface-container-high">
+<img alt="Rose &amp; Cardamom Kulfi" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/AEtjO1V8oVRH54DdnR_wnYUKVUe19ktL_VCatlqxsyQlsITNm1hH02YXjcN_RqnpxV8GpwUHonVqN0hr1bkmEJxH3gEYzAmz1AIl92FAqlRO66VFpofs6SNtPcJ7Bp3jvAA5EeYAA7rJ6aXenGtlLc59mY-Dl8WUW8qoGo91jV7xqHvH-0uBN4Odv1D7NdG9iRHPQXQSfKHbRKHORA_LcJj9WJOQp3iTVMnHTPhERkA5VYIEyfGlwLwEo1a6R2Pb"/>
+<span class="absolute top-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md font-label-caps text-label-caps text-primary shadow-sm">₹650</span>
+</div>
+<div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+<div>
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-outline">ARTISANAL DESSERT</span>
+<h3 class="font-headline-sm text-title-lg text-on-surface mt-1 group-hover:text-primary transition-colors">Rose &amp; Cardamom Kulfi</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 font-light">Artisanal kulfi sphere, spun amber sugar nest, pistachio crumb, rabri glaze, and edible organic rose petals.</p>
+</div>
+<div class="pt-4 flex items-center justify-between text-secondary group-hover:text-primary transition-colors">
+<span class="font-label-caps text-label-caps tracking-widest uppercase">Discover Pairing</span>
+<span class="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 4. MENU SECTION (SOPHISTICATED EDITORIAL LAYOUT)                          -->
+<!-- ========================================================================= -->
+<section class="scene-section py-24 bg-surface-container-lowest relative" data-scene="menu" id="menu">
+<div class="max-w-6xl mx-auto px-6 lg:px-12">
+<!-- Section Title -->
+<div class="text-center max-w-2xl mx-auto mb-14 space-y-3">
+<span class="font-label-caps text-label-caps text-primary tracking-[0.3em]">THE TASTING COMPENDIUM</span>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-normal">Autumn Ala Carte Menu</h2>
+<p class="font-body-md text-body-md text-on-surface-variant font-light">
+          Crafted with indigenous Karnataka ingredients and heritage micro-batches sourced directly from organic estates.
+        </p>
+</div>
+<!-- Menu Category Navigation Tabs -->
+<div class="flex flex-wrap items-center justify-center gap-2 md:gap-4 mb-16" id="menu-tabs">
+<button class="menu-tab-btn active px-6 py-2.5 rounded bg-primary text-on-primary font-label-caps text-label-caps tracking-[0.2em] shadow-md transition-all" data-category="all">
+          ALL DISHES
+        </button>
+<button class="menu-tab-btn px-6 py-2.5 rounded bg-surface-container text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-[0.2em] transition-all" data-category="starters">
+          STARTERS
+        </button>
+<button class="menu-tab-btn px-6 py-2.5 rounded bg-surface-container text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-[0.2em] transition-all" data-category="tandoor">
+          TANDOOR
+        </button>
+<button class="menu-tab-btn px-6 py-2.5 rounded bg-surface-container text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-[0.2em] transition-all" data-category="mains">
+          MAINS
+        </button>
+<button class="menu-tab-btn px-6 py-2.5 rounded bg-surface-container text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-[0.2em] transition-all" data-category="desserts">
+          DESSERTS
+        </button>
+<button class="menu-tab-btn px-6 py-2.5 rounded bg-surface-container text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-[0.2em] transition-all" data-category="cocktails">
+          COCKTAILS
+        </button>
+</div>
+<!-- Two-Column Editorial Dish Listing -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-14 gap-y-10" id="menu-items-grid">
+<!-- Item 1 -->
+<div class="menu-item-row group flex flex-col space-y-2 p-3 rounded-lg hover:bg-surface-container-low transition-colors" data-cat="starters">
+<div class="flex items-baseline justify-between gap-4">
+<h4 class="font-headline-sm text-title-lg text-on-surface group-hover:text-primary transition-colors">Burrata Chaat</h4>
+<span class="flex-1 border-b border-dotted border-outline-variant/60 hidden sm:block"></span>
+<span class="font-title-md text-title-md text-primary font-medium">₹495</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Creamy artisanal burrata, spiced tamarind reduction, mint emulsion, &amp; crisp artisanal cumin papdi.</p>
+<div class="flex items-center gap-2 pt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-caps bg-surface-container-high text-secondary-fixed">Vegetarian</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-body-sm text-xs text-outline">Pair with: Sula Brut Tropicale</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="menu-item-row group flex flex-col space-y-2 p-3 rounded-lg hover:bg-surface-container-low transition-colors" data-cat="mains">
+<div class="flex items-baseline justify-between gap-4">
+<h4 class="font-headline-sm text-title-lg text-on-surface group-hover:text-primary transition-colors">Truffle Dal Makhani</h4>
+<span class="flex-1 border-b border-dotted border-outline-variant/60 hidden sm:block"></span>
+<span class="font-title-md text-title-md text-primary font-medium">₹575</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">36-hour slow-cooked urad lentils with churned smoked white butter &amp; freshly shaved black truffle.</p>
+<div class="flex items-center gap-2 pt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-caps bg-surface-container-high text-secondary-fixed">Signature</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-body-sm text-xs text-outline">Pair with: Grover La Réserve Syrah</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="menu-item-row group flex flex-col space-y-2 p-3 rounded-lg hover:bg-surface-container-low transition-colors" data-cat="tandoor">
+<div class="flex items-baseline justify-between gap-4">
+<h4 class="font-headline-sm text-title-lg text-on-surface group-hover:text-primary transition-colors">Tandoori Broccoli</h4>
+<span class="flex-1 border-b border-dotted border-outline-variant/60 hidden sm:block"></span>
+<span class="font-title-md text-title-md text-primary font-medium">₹425</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Charred florets marinated in spiced almond cream, toasted green cardamom, and chili oil glaze.</p>
+<div class="flex items-center gap-2 pt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-caps bg-surface-container-high text-secondary-fixed">Sigri Roasted</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-body-sm text-xs text-outline">Pair with: Fratelli Gran Cuvée</span>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="menu-item-row group flex flex-col space-y-2 p-3 rounded-lg hover:bg-surface-container-low transition-colors" data-cat="starters">
+<div class="flex items-baseline justify-between gap-4">
+<h4 class="font-headline-sm text-title-lg text-on-surface group-hover:text-primary transition-colors">Nalli Nihari Tartlet</h4>
+<span class="flex-1 border-b border-dotted border-outline-variant/60 hidden sm:block"></span>
+<span class="font-title-md text-title-md text-primary font-medium">₹895</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Braised Awadhi lamb shank reduction, flaky saffron shortcrust pastry, micro ginger crisps.</p>
+<div class="flex items-center gap-2 pt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-caps bg-surface-container-high text-secondary-fixed">Awadhi Heritage</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-body-sm text-xs text-outline">Pair with: Krsma Cabernet Sauvignon</span>
+</div>
+</div>
+<!-- Item 5 -->
+<div class="menu-item-row group flex flex-col space-y-2 p-3 rounded-lg hover:bg-surface-container-low transition-colors" data-cat="mains">
+<div class="flex items-baseline justify-between gap-4">
+<h4 class="font-headline-sm text-title-lg text-on-surface group-hover:text-primary transition-colors">Wild Morel Kulcha</h4>
+<span class="flex-1 border-b border-dotted border-outline-variant/60 hidden sm:block"></span>
+<span class="font-title-md text-title-md text-primary font-medium">₹420</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Artisanal clay-oven flatbread stuffed with Kashmiri guchhi (morels), scamorza, and mountain herbs.</p>
+<div class="flex items-center gap-2 pt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-caps bg-surface-container-high text-secondary-fixed">Wood-Fired</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-body-sm text-xs text-outline">Pair with: Chandon Vintage Rosé</span>
+</div>
+</div>
+<!-- Item 6 -->
+<div class="menu-item-row group flex flex-col space-y-2 p-3 rounded-lg hover:bg-surface-container-low transition-colors" data-cat="starters">
+<div class="flex items-baseline justify-between gap-4">
+<h4 class="font-headline-sm text-title-lg text-on-surface group-hover:text-primary transition-colors">Kokum &amp; Gondhoraj Ceviche</h4>
+<span class="flex-1 border-b border-dotted border-outline-variant/60 hidden sm:block"></span>
+<span class="font-title-md text-title-md text-primary font-medium">₹680</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Cured Himalayan rainbow trout, wild kokum reduction, crispy lotus root, and Bengal lime zest.</p>
+<div class="flex items-center gap-2 pt-1">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-caps bg-surface-container-high text-secondary-fixed">Coastal Cured</span>
+<span class="text-outline text-xs">•</span>
+<span class="font-body-sm text-xs text-outline">Pair with: Sula Sauvignon Blanc</span>
+</div>
+</div>
+</div>
+<!-- Menu PDF CTA -->
+<div class="mt-16 text-center">
+<a class="inline-flex items-center gap-3 px-8 py-3.5 rounded bg-surface-container text-on-surface hover:bg-surface-container-high hover:text-primary font-label-caps text-label-caps tracking-[0.2em] shadow-md transition-all" href="#menu">
+<span class="material-symbols-outlined text-base text-primary">download</span>
+<span>VIEW FULL DEGUSTATION &amp; DRINKS MENU (PDF)</span>
+</a>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 5. THE EXPERIENCE (CINEMATIC FULL-WIDTH PARALLAX BANNER)                 -->
+<!-- ========================================================================= -->
+<section class="scene-section relative py-32 overflow-hidden flex items-center justify-center" data-scene="experience" id="experience">
+<div class="absolute inset-0 z-0 bg-fixed scale-105" style="background-image: url('https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO'); background-position: center; background-size: cover;"></div>
+<div class="absolute inset-0 z-0 bg-surface-container-lowest/85 backdrop-blur-xs"></div>
+<div class="absolute inset-0 z-0 bg-gradient-to-b from-surface-container-lowest via-transparent to-surface-container-lowest"></div>
+<div class="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8">
+<span class="font-label-caps text-label-caps text-primary tracking-[0.35em] block">SENSORY GASTRONOMY</span>
+<h2 class="font-display-hero text-headline-lg-mobile md:text-display-hero font-light text-on-surface tracking-tight leading-tight">
+        More than a meal. <br/><span class="italic text-secondary font-normal">An Experience.</span>
+</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant font-light max-w-2xl mx-auto leading-relaxed">
+        From the first pour of smoked vetiver botanicals to the final warm cardamom bite, every gesture is curated to make your Bangalore evening timeless.
+      </p>
+<!-- Atmosphere Badges Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6">
+<div class="p-4 rounded bg-surface-container/70 backdrop-blur-md flex flex-col items-center space-y-2 shadow-lg lux-rim-glow">
+<span class="material-symbols-outlined text-primary text-2xl">candle</span>
+<span class="font-label-caps text-[11px] tracking-wider text-on-surface">Intimate Candlelight</span>
+</div>
+<div class="p-4 rounded bg-surface-container/70 backdrop-blur-md flex flex-col items-center space-y-2 shadow-lg lux-rim-glow">
+<span class="material-symbols-outlined text-primary text-2xl">outdoor_grill</span>
+<span class="font-label-caps text-[11px] tracking-wider text-on-surface">Artisanal Clay Sigri</span>
+</div>
+<div class="p-4 rounded bg-surface-container/70 backdrop-blur-md flex flex-col items-center space-y-2 shadow-lg lux-rim-glow">
+<span class="material-symbols-outlined text-primary text-2xl">album</span>
+<span class="font-label-caps text-[11px] tracking-wider text-on-surface">Curated Vinyl Moods</span>
+</div>
+<div class="p-4 rounded bg-surface-container/70 backdrop-blur-md flex flex-col items-center space-y-2 shadow-lg lux-rim-glow">
+<span class="material-symbols-outlined text-primary text-2xl">wine_bar</span>
+<span class="font-label-caps text-[11px] tracking-wider text-on-surface">Sommelier Cellar</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 6. GALLERY (IMMERSIVE HORIZONTAL SCROLLING SHOWCASE)                      -->
+<!-- ========================================================================= -->
+<section class="scene-section py-24 bg-surface-container-lowest overflow-hidden" data-scene="gallery" id="gallery">
+<div class="max-w-7xl mx-auto px-6 lg:px-12 mb-10 flex items-end justify-between">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="h-[1px] w-8 bg-primary"></span>
+<span class="font-label-caps text-label-caps text-primary tracking-[0.3em]">MOMENTS AT EMBER</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Visual Chronicles</h2>
+</div>
+<div class="hidden md:flex items-center gap-2 text-outline">
+<span class="material-symbols-outlined text-sm">swipe_left</span>
+<span class="font-label-caps text-[10px] tracking-widest">DRAG OR SCROLL TO GLANCE</span>
+</div>
+</div>
+<!-- Smooth Horizontal Scroll Track -->
+<div class="flex gap-6 overflow-x-auto pb-8 pt-2 px-6 lg:px-12 snap-x snap-mandatory scrollbar-none" id="gallery-carousel">
+<!-- Gallery Item 1 -->
+<div class="flex-none w-[320px] md:w-[420px] snap-center group">
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
+<img alt="Smoked Sigri Dish Artistry" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1U_lbkPH1diQvKiFdfDb-tu8Ere9-nPxs4JOdyuR-wCBPel_-z_a2Z0em8WXoScB8lhpAvUi-tvIOkcI2sY5mi3tA0E_GyvtZEfaBODO1NYgjDW8QzXZs0h1L9cZ3N8hBGJDMiQ_SLdAO9uPomFH3HVuiax9OaqhuJ4qCZ0iScBdUGwL03kQl4-T2iR-PClLLpEGa270zC5vo0PwSB63GmwePrwGCf8Om_JkPonh_F4vFVmUgViSR6FtnC4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">TECHNIQUE</span>
+<p class="font-headline-sm text-title-lg text-on-surface mt-1">Smoked Sigri Technique</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Charcoal infusing heirloom spices at 450°C</p>
+</div>
+</div>
+</div>
+<!-- Gallery Item 2 -->
+<div class="flex-none w-[320px] md:w-[420px] snap-center group">
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
+<img alt="The Amber Dining Hall" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">ATMOSPHERE</span>
+<p class="font-headline-sm text-title-lg text-on-surface mt-1">The Amber Dining Hall</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Intimate salons framed by teak arches and brass lanterns</p>
+</div>
+</div>
+</div>
+<!-- Gallery Item 3 -->
+<div class="flex-none w-[320px] md:w-[420px] snap-center group">
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
+<img alt="Saffron Dum Heritage Biryani" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1VLV2Izrjc9_J4Ie26mvjE19BlIAqmYoJdqAiBmT5apzC01icT-c5i1Og3oMh6w7bTiQegSAD5u3b2P7mesVYP2HWDbLMfVJGBgVp1Tx23OTpgpLGsw5egYZ_x39UPJqQTVLZkTX9tlHRn3akfZ5s30uUiaUSJ3rrP-NUuJtIxUtlgVmCHPcjfB31naUvJaiElpm75b6OZ7sWKj_grfOQF3frOVuesk50hcL3i98ucFEcgEjh33Ul1cAbh0"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">RITUAL</span>
+<p class="font-headline-sm text-title-lg text-on-surface mt-1">Dum Heritage in Brass Pot</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Handcrafted cast-iron sealing ancient aromatics</p>
+</div>
+</div>
+</div>
+<!-- Gallery Item 4 -->
+<div class="flex-none w-[320px] md:w-[420px] snap-center group">
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
+<img alt="Rose &amp; Cardamom Kulfi Presentation" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1V8oVRH54DdnR_wnYUKVUe19ktL_VCatlqxsyQlsITNm1hH02YXjcN_RqnpxV8GpwUHonVqN0hr1bkmEJxH3gEYzAmz1AIl92FAqlRO66VFpofs6SNtPcJ7Bp3jvAA5EeYAA7rJ6aXenGtlLc59mY-Dl8WUW8qoGo91jV7xqHvH-0uBN4Odv1D7NdG9iRHPQXQSfKHbRKHORA_LcJj9WJOQp3iTVMnHTPhERkA5VYIEyfGlwLwEo1a6R2Pb"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">CONFECTION</span>
+<p class="font-headline-sm text-title-lg text-on-surface mt-1">Spun Sugar &amp; Rose Petals</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Delicate artisanal sugar work paired with slow rabri</p>
+</div>
+</div>
+</div>
+<!-- Gallery Item 5 -->
+<div class="flex-none w-[320px] md:w-[420px] snap-center group">
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
+<img alt="Chef Arjun Mehra in Kitchen" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1UIxEnK5eO1EYP3H1_9knmqYwnIKXo-03wZcsXOAOEcUuQCv4Jrq_l9EwLJ5jkaTbp39XzdpfulX7iys9xb3ogup-sewC0rQxUvmR60I5e2EDuPmyYV8EiUFgcPb1wstpavIUBGV-ucPyD-8EAyX5llxeIlNMTNL_ADXTkke27Q9UqdXDzShc_ZAeiPqJxY6vOoqoiEZuYIbIaH_E_tVPa6-L4kxcQovflziomdnSTbZjOSIc8R3264pGaW"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">MASTERY</span>
+<p class="font-headline-sm text-title-lg text-on-surface mt-1">The Heart of the Kitchen</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Chef Arjun Mehra curating the evening's tasting flight</p>
+</div>
+</div>
+</div>
+<!-- Gallery Item 6 -->
+<div class="flex-none w-[320px] md:w-[420px] snap-center group">
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden shadow-xl bg-surface-container lux-rim-glow">
+<img alt="Wild Malai Mushroom Galouti Texture" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1Uz4CGMoA3H1cGu_tR4dxjMxLEeh4CCtAeScDZCKNbOEsqhTLIZqUQAgYrGghsypeDdNHEmjzhP76XzbEeE-oQHZlpWVEANjp_Yvg-lkSvHpNR4v7mLZqK_d4Raaha9rYxNeLbheOClFYbE3P7A6d8ZuucAWF_pysZ0zYb6UCXPdzQE841KSzn5364WTMRwVeLjcdzv28fnRuNgTgmBvuTHIq19YtR5xGAHsCXN79BYqaA5KOuD3wgMMsY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-transparent to-transparent opacity-80 group-hover:opacity-95 transition-opacity"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-[10px] tracking-[0.2em] text-primary">TEXTURE</span>
+<p class="font-headline-sm text-title-lg text-on-surface mt-1">Modern Galouti Texture</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Velvety wild mushrooms rested upon saffron crisp</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 7. CHEF SECTION (CRAFTED WITH INTENTION)                                  -->
+<!-- ========================================================================= -->
+<section class="scene-section py-24 bg-surface-container relative" data-scene="chef" id="chef">
+<div class="max-w-7xl mx-auto px-6 lg:px-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+<!-- Chef Portrait with Warm Teak Frame -->
+<div class="lg:col-span-5 relative layer-float-card">
+<div class="relative z-10 rounded-xl overflow-hidden shadow-2xl bg-surface-container-low aspect-[3/4] lux-rim-glow">
+<img alt="Executive Head Chef Arjun Mehra" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1UIxEnK5eO1EYP3H1_9knmqYwnIKXo-03wZcsXOAOEcUuQCv4Jrq_l9EwLJ5jkaTbp39XzdpfulX7iys9xb3ogup-sewC0rQxUvmR60I5e2EDuPmyYV8EiUFgcPb1wstpavIUBGV-ucPyD-8EAyX5llxeIlNMTNL_ADXTkke27Q9UqdXDzShc_ZAeiPqJxY6vOoqoiEZuYIbIaH_E_tVPa6-L4kxcQovflziomdnSTbZjOSIc8R3264pGaW"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/80 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<span class="font-label-caps text-[10px] tracking-[0.25em] text-primary">EXECUTIVE CHEF</span>
+<p class="font-headline-sm text-title-lg text-on-surface">Arjun Mehra</p>
+</div>
+</div>
+<!-- Warm Amber Accent Backing Frame -->
+<div class="absolute -bottom-4 -right-4 w-full h-full rounded-xl bg-surface-container-high -z-0 hidden md:block"></div>
+</div>
+<!-- Chef Narrative and Statement -->
+<div class="lg:col-span-7 flex flex-col space-y-6">
+<div class="flex items-center gap-3">
+<span class="h-[1px] w-8 bg-primary"></span>
+<span class="font-label-caps text-label-caps text-primary tracking-[0.3em]">THE CULINARY DIRECTOR</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-normal leading-tight">
+            Crafted with Intention, <br/><span class="italic text-secondary">Rooted in Fire.</span>
+</h2>
+<div class="p-6 rounded-xl bg-surface-container-lowest shadow-sm space-y-3">
+<p class="font-headline-sm text-title-md md:text-headline-sm text-on-surface font-light italic leading-relaxed">
+              “Our kitchen brings together traditional Indian culinary techniques passed down through royal generations, seasonal local ingredients from Karnataka, and contemporary presentation without diluting soul.”
+            </p>
+<span class="font-label-caps text-label-caps text-secondary tracking-widest block pt-2">— CHEF ARJUN MEHRA</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant font-light leading-relaxed">
+            Trained across iconic kitchens of Old Delhi, Lucknow, and Hyderabad, Arjun transitioned to vanguard dining spaces across Europe before returning to Bangalore with a singular obsession: to unearth rare heirloom spices and bring sacred open-flame cooking into Michelin-standard focus.
+          </p>
+<!-- Accolades and Credibility Badges -->
+<div class="pt-4 flex flex-wrap items-center gap-6 text-outline">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">verified</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ex-Leela Palace &amp; Taj Falaknuma</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-base">emoji_events</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">San Pellegrino Young Chef Finalist 2022</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 8. RESERVATION SECTION (PREMIUM INTERACTIVE BOOKING CTA)                 -->
+<!-- ========================================================================= -->
+<section class="scene-section py-24 bg-surface-container-lowest relative" data-scene="reservation" id="reservation">
+<div class="max-w-4xl mx-auto px-6 lg:px-12">
+<!-- Section Intro -->
+<div class="text-center space-y-4 mb-14">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-surface-container text-primary font-label-caps text-label-caps tracking-[0.2em]">
+<span class="material-symbols-outlined text-sm">event_seat</span>
+<span>PRIVATE SALON &amp; MAIN HALL</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-normal">Your Table Awaits</h2>
+<p class="font-body-md text-body-md text-on-surface-variant font-light max-w-lg mx-auto">
+          Join us for an evening of bold aromas, thoughtful hospitality, and unforgettable moments. Reservations recommended 48 hours in advance.
+        </p>
+</div>
+<!-- Booking Card Container -->
+<div class="p-8 md:p-12 rounded-2xl bg-surface-container shadow-2xl relative overflow-hidden lux-rim-glow layer-float-card">
+<div class="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+<form class="space-y-8 relative z-10" id="reservation-form" onsubmit="event.preventDefault(); handleReservationSubmit();">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Full Name -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant tracking-wider block" for="res-name">GUEST FULL NAME</label>
+<input class="w-full bg-surface-container-high text-on-surface px-4 py-3 rounded focus:outline-none focus:bg-surface-container-highest transition-colors font-body-md text-body-md placeholder-outline/50" id="res-name" placeholder="e.g. Vikramaditya Rao" required="" type="text"/>
+</div>
+<!-- Phone Number -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant tracking-wider block" for="res-phone">CONTACT NUMBER</label>
+<input class="w-full bg-surface-container-high text-on-surface px-4 py-3 rounded focus:outline-none focus:bg-surface-container-highest transition-colors font-body-md text-body-md placeholder-outline/50" id="res-phone" placeholder="+91 98765 43210" required="" type="tel"/>
+</div>
+<!-- Date Selector -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant tracking-wider block" for="res-date">DATE OF EXPERIENCE</label>
+<select class="w-full bg-surface-container-high text-on-surface px-4 py-3 rounded focus:outline-none focus:bg-surface-container-highest transition-colors font-body-md text-body-md" id="res-date">
+<option value="tonight">Tonight, 12 October</option>
+<option value="tomorrow">Tomorrow, 13 October</option>
+<option value="weekend">Friday Evening, 18 October</option>
+<option value="custom">Custom Date (Contact Concierge)</option>
+</select>
+</div>
+<!-- Guests -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant tracking-wider block" for="res-guests">PARTY SIZE</label>
+<select class="w-full bg-surface-container-high text-on-surface px-4 py-3 rounded focus:outline-none focus:bg-surface-container-highest transition-colors font-body-md text-body-md" id="res-guests">
+<option value="2">2 Guests (Intimate Table)</option>
+<option value="4">4 Guests (Dining Booth)</option>
+<option value="6">6 Guests (Center Salon)</option>
+<option value="8+">Private Dining Salon (8-16 Guests)</option>
+</select>
+</div>
+</div>
+<!-- Time Slot Pill Selection -->
+<div class="space-y-3">
+<label class="font-label-caps text-label-caps text-on-surface-variant tracking-wider block">PREFERRED SEATING SLOT</label>
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-3" id="slot-buttons">
+<button class="slot-btn active py-2.5 rounded bg-primary text-on-primary font-label-caps text-label-caps tracking-widest text-center shadow-sm transition-all" data-slot="7:00 PM" type="button">7:00 PM</button>
+<button class="slot-btn py-2.5 rounded bg-surface-container-high text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-widest text-center transition-all" data-slot="7:45 PM" type="button">7:45 PM</button>
+<button class="slot-btn py-2.5 rounded bg-surface-container-high text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-widest text-center transition-all" data-slot="8:30 PM" type="button">8:30 PM</button>
+<button class="slot-btn py-2.5 rounded bg-surface-container-high text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-widest text-center transition-all" data-slot="9:15 PM" type="button">9:15 PM</button>
+<button class="slot-btn py-2.5 rounded bg-surface-container-high text-on-surface-variant hover:text-primary font-label-caps text-label-caps tracking-widest text-center transition-all" data-slot="10:00 PM" type="button">10:00 PM</button>
+</div>
+</div>
+<!-- Dietary and Special Occasions -->
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant tracking-wider block" for="res-notes">SPECIAL REQUESTS / DIETARY ALLERGIES</label>
+<textarea class="w-full bg-surface-container-high text-on-surface px-4 py-3 rounded focus:outline-none focus:bg-surface-container-highest transition-colors font-body-sm text-body-sm placeholder-outline/50" id="res-notes" placeholder="Anniversary celebration, Sattvic requirements, Jain preparations, or quiet corner request..." rows="2"></textarea>
+</div>
+<!-- Submit Button & Concierge Notice -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-6 pt-4">
+<button class="w-full sm:w-auto px-10 py-4 rounded bg-primary text-on-primary font-label-caps text-label-caps tracking-[0.2em] shadow-lg hover:bg-secondary transition-all duration-300" id="res-submit-btn" type="submit">
+              CONFIRM TABLE REQUEST
+            </button>
+<div class="flex items-center gap-3 text-outline">
+<span class="material-symbols-outlined text-secondary text-lg">phone_in_talk</span>
+<a class="font-label-caps text-label-caps hover:text-primary transition-colors" href="tel:+919876543210">OR CALL: +91 98765 43210</a>
+</div>
+</div>
+<!-- Feedback Status Toast Banner -->
+<div class="hidden p-4 rounded bg-surface-container-highest text-primary font-body-sm text-body-sm flex items-center gap-3" id="reservation-status">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+<span>Thank you. Your reservation request has been transmitted to our Maître D'. We will confirm your table shortly via SMS.</span>
+</div>
+</form>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- 9. LOCATION & DETAILS                                                     -->
+<!-- ========================================================================= -->
+<section class="scene-section py-24 bg-surface-container relative" data-scene="location" id="location">
+<div class="max-w-7xl mx-auto px-6 lg:px-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Contact and Logistics Card -->
+<div class="lg:col-span-5 space-y-8">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="h-[1px] w-8 bg-primary"></span>
+<span class="font-label-caps text-label-caps text-primary tracking-[0.3em]">FIND OUR SANCTUARY</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Indiranagar, Bangalore</h2>
+</div>
+<div class="space-y-6">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center text-primary shrink-0 mt-1">
+<span class="material-symbols-outlined text-xl">pin_drop</span>
+</div>
+<div>
+<p class="font-headline-sm text-title-md text-on-surface">Ember &amp; Spice Bangalore</p>
+<p class="font-body-md text-body-md text-on-surface-variant font-light">100 Feet Road, HAL 2nd Stage, Indiranagar</p>
+<p class="font-body-sm text-body-sm text-outline">Bengaluru, Karnataka 560038, India</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center text-secondary shrink-0 mt-1">
+<span class="material-symbols-outlined text-xl">schedule</span>
+</div>
+<div>
+<p class="font-headline-sm text-title-md text-on-surface">Dining Sessions</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Lunch: 12:00 PM – 3:30 PM (Tue – Sun)</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Dinner: 7:00 PM – 11:30 PM (Tue – Sun)</p>
+<p class="font-body-sm text-xs text-outline pt-1">Valet Parking Available &amp; Complimentary</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded bg-surface-container-high flex items-center justify-center text-primary shrink-0 mt-1">
+<span class="material-symbols-outlined text-xl">styler</span>
+</div>
+<div>
+<p class="font-headline-sm text-title-md text-on-surface">Dress Code &amp; Etiquette</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant font-light">Smart Elegant attire. Private salons accommodate children above 8 years of age.</p>
+</div>
+</div>
+</div>
+<div class="pt-2">
+<a class="inline-flex items-center gap-3 px-8 py-3.5 rounded bg-surface-container-highest text-primary font-label-caps text-label-caps tracking-[0.2em] shadow hover:bg-primary hover:text-on-primary transition-all duration-300" href="https://maps.google.com" rel="noopener noreferrer" target="_blank">
+<span class="material-symbols-outlined text-base">directions</span>
+<span>GET DIRECTIONS (GOOGLE MAPS)</span>
+</a>
+</div>
+</div>
+<!-- Styled Dark Interactive Map Container -->
+<div class="lg:col-span-7">
+<div class="relative w-full h-[450px] rounded-2xl overflow-hidden shadow-2xl bg-surface-container-lowest flex items-center justify-center lux-rim-glow" data-location="Indiranagar, Bangalore, Karnataka, India">
+<img alt="Location Map Ambient Backdrop" class="absolute inset-0 w-full h-full object-cover opacity-25 filter grayscale contrast-125" src="https://lh3.googleusercontent.com/aida/AEtjO1X0EzBLsjUNTubGYHDsHVZaRMsDrq3SSwd7VmL4VHgXFNTuTrnmNWyI5ZJKySOSYe-20ly7NGCwzJLuQRdqMjlLbItHMb6ulBcyIFcDuqHQspefVQETXXZ-KelxKaFSdWK70Q3qO30tUmzLfQH_s1YXRbjVFsI61uDUMiNREX4SV_OBzA2Si3fD-nphah1ZyEtpdcudfHQAnzzkuU1wpADCv16PXgM7O3dZf2fLyuajXXmS0GHztvKpo2pO"/>
+<div class="absolute inset-0 bg-surface-container-lowest/80 backdrop-blur-sm"></div>
+<!-- Map Mockup Graphic -->
+<div class="relative z-10 flex flex-col items-center text-center p-8 max-w-sm">
+<div class="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary mb-4 animate-pulse shadow-lg">
+<span class="material-symbols-outlined text-3xl">restaurant</span>
+</div>
+<span class="font-label-caps text-label-caps text-primary tracking-[0.25em]">INDIRANAGAR EPICENTER</span>
+<p class="font-headline-sm text-title-lg text-on-surface mt-1">Ember &amp; Spice</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2 font-light">100 Feet Road, walking distance from 12th Main junction. Dedicated valet attendants available at porch.</p>
+<div class="mt-6 flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-high/90 text-on-surface font-label-caps text-[10px] tracking-widest shadow-md">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+<span>OPEN TONIGHT · DINNER FROM 7:00 PM</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ========================================================================= -->
+<!-- INLINE CLIENT INTERACTIONS: 3D Camera Engine, Parallax, Tabs, Form       -->
+<!-- ========================================================================= -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // -------------------------------------------------------------
+      // 1. CINEMATIC 3D CAMERA SCROLL ENGINE (Between Adjacent Sections)
+      // -------------------------------------------------------------
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const scenes = Array.from(document.querySelectorAll('.scene-section'));
+      
+      if (!prefersReducedMotion && scenes.length > 0) {
+        let isTicking = false;
+        
+        function update3DCamera() {
+          const viewportHeight = window.innerHeight;
+          const scrollY = window.scrollY;
+
+          scenes.forEach((scene, index) => {
+            const rect = scene.getBoundingClientRect();
+            // Calculate progress through viewport (-1 when above, 0 when centered, 1 when below)
+            const sceneCenter = rect.top + rect.height / 2;
+            const screenCenter = viewportHeight / 2;
+            const deltaNorm = (sceneCenter - screenCenter) / (viewportHeight * 0.9);
+            
+            // Subtle mobile attenuation for angle and displacement
+            const isMobile = window.innerWidth < 768;
+            const maxTilt = isMobile ? 2.5 : 4.5;
+            const maxZ = isMobile ? 120 : 200;
+
+            if (deltaNorm > 1.2 || deltaNorm < -1.2) {
+              // Far out of viewport - dormant state
+              scene.style.transform = deltaNorm < -1.2 
+                ? `translate3d(0, -25px, -${maxZ}px) scale(0.93) rotateX(${maxTilt}deg)`
+                : `translate3d(0, 25px, 60px) scale(0.95) rotateX(-${maxTilt * 0.5}deg)`;
+              scene.style.opacity = '0.35';
+              scene.style.filter = 'blur(1.5px) brightness(0.75)';
+            } else if (deltaNorm < -0.1) {
+              // Outgoing section (scrolling past top)
+              const factor = Math.min(1, Math.abs(deltaNorm + 0.1));
+              const tz = -factor * maxZ;
+              const scale = 1 - (factor * 0.07);
+              const rotX = factor * maxTilt;
+              const rotY = factor * -0.8;
+              const opac = 1 - (factor * 0.55);
+              const blur = factor * 1.5;
+              const bright = 1 - (factor * 0.22);
+              
+              scene.style.transform = `translate3d(0, ${-factor * 32}px, ${tz}px) scale(${scale}) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+              scene.style.opacity = opac.toFixed(3);
+              scene.style.filter = `blur(${blur.toFixed(1)}px) brightness(${bright.toFixed(2)})`;
+            } else if (deltaNorm > 0.1) {
+              // Incoming section (emerging from bottom depth)
+              const factor = Math.min(1, deltaNorm - 0.1);
+              const tz = (1 - factor) * 40 - (factor * 30);
+              const scale = 0.95 + (1 - factor) * 0.05;
+              const rotX = -factor * (maxTilt * 0.7);
+              const opac = 1 - (factor * 0.45);
+              const blur = factor * 0.8;
+              const bright = 0.92 + (1 - factor) * 0.08;
+              
+              scene.style.transform = `translate3d(0, ${factor * 28}px, ${tz}px) scale(${scale}) rotateX(${rotX}deg)`;
+              scene.style.opacity = opac.toFixed(3);
+              scene.style.filter = `blur(${blur.toFixed(1)}px) brightness(${bright.toFixed(2)})`;
+            } else {
+              // Settle in camera focus (heroic center)
+              scene.style.transform = 'translate3d(0, 0px, 0px) scale(1) rotateX(0deg) rotateY(0deg)';
+              scene.style.opacity = '1';
+              scene.style.filter = 'blur(0px) brightness(1)';
+            }
+
+            // Layered parallax interior elements
+            const floatingCard = scene.querySelector('.layer-float-card');
+            if (floatingCard) {
+              const cardOffset = -deltaNorm * 22;
+              floatingCard.style.transform = `translateY(${cardOffset}px)`;
+            }
+          });
+
+          isTicking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+          if (!isTicking) {
+            window.requestAnimationFrame(update3DCamera);
+            isTicking = true;
+          }
+        }, { passive: true });
+
+        // Initial setup run
+        update3DCamera();
+      }
+
+      // -------------------------------------------------------------
+      // 2. SUBTLE GOLDEN EMBER BOKEH DRIFT IN VIEWPORT BACKGROUND
+      // -------------------------------------------------------------
+      const canvas = document.getElementById('ember-canvas');
+      if (canvas && !prefersReducedMotion) {
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        });
+
+        const particles = Array.from({ length: 24 }, () => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 2 + 0.8,
+          speedY: Math.random() * 0.45 + 0.25,
+          speedX: (Math.random() - 0.5) * 0.25,
+          alpha: Math.random() * 0.4 + 0.15,
+          baseAlpha: Math.random() * 0.35 + 0.15
+        }));
+
+        function renderEmbers() {
+          ctx.clearRect(0, 0, width, height);
+          particles.forEach(p => {
+            p.y -= p.speedY;
+            p.x += p.speedX;
+            if (p.y < -10) {
+              p.y = height + 10;
+              p.x = Math.random() * width;
+            }
+            if (p.x < -10) p.x = width + 10;
+            if (p.x > width + 10) p.x = -10;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(242, 202, 80, ${p.alpha})`;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = 'rgba(212, 175, 55, 0.4)';
+            ctx.fill();
+          });
+          requestAnimationFrame(renderEmbers);
+        }
+        renderEmbers();
+      }
+
+      // -------------------------------------------------------------
+      // 3. Subtle 3D Card Hover Tilt for Signature Dishes
+      // -------------------------------------------------------------
+      const tiltCards = document.querySelectorAll('.tilt-card');
+      tiltCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          const rotateX = (-y / rect.height) * 10;
+          const rotateY = (x / rect.width) * 10;
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px) scale(1)';
+        });
+      });
+
+      // -------------------------------------------------------------
+      // 4. Hero Interactive Subtle Perspective on Mouse Move
+      // -------------------------------------------------------------
+      const heroSection = document.getElementById('hero');
+      const hero3DCard = document.getElementById('hero-tilt-card');
+      if (heroSection && hero3DCard) {
+        heroSection.addEventListener('mousemove', (e) => {
+          const { clientX, clientY } = e;
+          const xOffset = (clientX / window.innerWidth - 0.5) * 14;
+          const yOffset = (clientY / window.innerHeight - 0.5) * 14;
+          hero3DCard.style.transform = `perspective(1200px) rotateY(${xOffset}deg) rotateX(${-yOffset}deg)`;
+        });
+        heroSection.addEventListener('mouseleave', () => {
+          hero3DCard.style.transform = 'perspective(1200px) rotateY(0deg) rotateX(0deg)';
+        });
+      }
+
+      // -------------------------------------------------------------
+      // 5. Menu Category Filter Tabs
+      // -------------------------------------------------------------
+      const menuTabs = document.querySelectorAll('.menu-tab-btn');
+      const menuRows = document.querySelectorAll('.menu-item-row');
+
+      menuTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          menuTabs.forEach(t => {
+            t.classList.remove('active', 'bg-primary', 'text-on-primary');
+            t.classList.add('bg-surface-container', 'text-on-surface-variant');
+          });
+          tab.classList.add('active', 'bg-primary', 'text-on-primary');
+          tab.classList.remove('bg-surface-container', 'text-on-surface-variant');
+
+          const category = tab.getAttribute('data-category');
+          menuRows.forEach(row => {
+            if (category === 'all' || row.getAttribute('data-cat') === category) {
+              row.style.display = 'flex';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // -------------------------------------------------------------
+      // 6. Reservation Time Slot Selector
+      // -------------------------------------------------------------
+      const slotBtns = document.querySelectorAll('.slot-btn');
+      slotBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          slotBtns.forEach(b => {
+            b.classList.remove('active', 'bg-primary', 'text-on-primary');
+            b.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+          });
+          btn.classList.add('active', 'bg-primary', 'text-on-primary');
+          btn.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+        });
+      });
+    });
+
+    // 7. Reservation Form Feedback Handler
+    function handleReservationSubmit() {
+      const statusToast = document.getElementById('reservation-status');
+      const submitBtn = document.getElementById('res-submit-btn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'SECURING SALON...';
+      }
+      setTimeout(() => {
+        if (statusToast) statusToast.classList.remove('hidden');
+        if (submitBtn) {
+          submitBtn.innerText = 'TABLE CONFIRMED';
+          submitBtn.classList.replace('bg-primary', 'bg-emerald-600');
+        }
+      }, 750);
+    }
+  </script>
+</div></main><aside class="fixed bottom-6 right-6 z-40 hidden md:flex items-center gap-3 bg-surface-container-low/90 backdrop-blur-xl px-5 py-3 rounded-full shadow-[0_12px_32px_-4px_rgba(0,0,0,0.8),0_0_24px_1px_rgba(212,175,55,0.1)]"><a class="flex items-center gap-2 text-on-surface hover:text-primary transition-colors font-label-caps text-label-caps tracking-widest" data-path="reservations" href="#reservation"><span class="material-symbols-outlined text-primary text-base">table_restaurant</span><span>RESERVE SALON</span></a><span class="h-4 w-[1px] bg-outline-variant/60"></span><a class="flex items-center gap-2 text-on-surface-variant hover:text-secondary transition-colors font-label-caps text-label-caps" href="tel:+919876543210"><span class="material-symbols-outlined text-secondary text-base">room_service</span><span>CONCIERGE</span></a></aside><div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-container-lowest/90 backdrop-blur-2xl px-6 py-3.5 flex items-center justify-between shadow-[0_-8px_24px_rgba(0,0,0,0.7)]"><div class="flex flex-col"><span class="font-label-caps text-[9px] tracking-widest text-outline">TASTING MENU</span><span class="font-headline-sm text-title-md text-on-surface">Autumn Degustation</span></div><a class="px-5 py-2.5 rounded bg-primary text-on-primary font-label-caps text-label-caps tracking-wider transition-colors" data-path="reservations" href="#reservation">RESERVE</a></div><footer class="w-full bg-surface-container-lowest text-on-surface relative"><div class="max-w-7xl mx-auto px-6 lg:px-12 pt-space-xl pb-space-lg"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-y-12 gap-x-gutter mb-space-xl"><div class="lg:col-span-2 space-y-4"><div class="flex items-center gap-3"><img alt="Ember &amp; Spice Logo" class="h-9 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1XENLs68zp7hVduPuUUSAF0MGIUx5yV8CdereVgrReaq2UTJyynjmzvlpoBHuSm4zu4WYTgfp0Gl9xtyTBnK3Nv1z3pvJ8CPLPWuDMdM9wwr1RvOQP71NjfmRXHxgHS1TfS9hg-Zsdgvn6woxNVDMFvlR92u0NE2rO1HzUiSPNn8HZ6KNViMrroRHfvnSIOjQOuwi1uEcrCgxiBG4uI_k39FxJTNuElOazwNQikWWi7PQnbXghgUh2pGZmK"/><span class="font-headline-sm text-headline-sm tracking-wide text-on-surface">EMBER &amp; SPICE</span></div><p class="font-headline-sm text-title-md italic text-secondary-fixed-dim max-w-sm">Where Every Plate Tells a Story.</p><p class="font-body-sm text-body-sm text-outline max-w-md">Contemporary Indian haute cuisine elevated through indigenous heirloom grains, fire-chiseled spices, and ritual gastronomy in the heart of Bangalore.</p></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">DINING HOURS</h3><div class="space-y-1 font-body-sm text-body-sm text-on-surface-variant"><p class="text-on-surface font-medium">Lunch Degustation</p><p>Tue – Sun: 12:30 PM – 3:30 PM</p></div><div class="space-y-1 font-body-sm text-body-sm text-on-surface-variant pt-2"><p class="text-on-surface font-medium">Dinner Salon</p><p>Tue – Sun: 7:00 PM – 11:30 PM</p><p class="text-outline text-xs">Closed on Mondays</p></div></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">CONTACT &amp; SALONS</h3><div class="space-y-1.5 font-body-sm text-body-sm text-on-surface-variant"><p class="text-on-surface font-medium">Indiranagar, Bangalore</p><p>100 Feet Road, HAL 2nd Stage</p><p>Karnataka 560038</p></div><div class="space-y-1 pt-2 font-body-sm text-body-sm"><p><a class="text-on-surface-variant hover:text-primary transition-colors" href="tel:+919876543210">+91 98765 43210</a></p><p><a class="text-on-surface-variant hover:text-primary transition-colors" href="mailto:hello@emberandspice.in">hello@emberandspice.in</a></p></div></div><div class="space-y-3"><h3 class="font-label-caps text-label-caps tracking-[0.2em] text-primary">CONNECTED</h3><p class="font-body-sm text-body-sm text-outline">Follow our culinary journeys and seasonal releases.</p><div class="flex flex-col space-y-2 pt-1"><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm text-secondary">photo_camera</span>Instagram</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" href="#"><span class="material-symbols-outlined text-sm text-secondary">public</span>Facebook</a><a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" data-path="reservations" href="#reservation"><span class="material-symbols-outlined text-sm text-secondary">concierge</span>Private Dining Inquiries</a></div></div></div><div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 font-body-sm text-body-sm text-outline"><p>© 2026 Ember &amp; Spice. All rights reserved.</p><div class="flex items-center gap-6 font-label-caps text-label-caps"><a class="text-outline hover:text-on-surface transition-colors" href="#">PRIVACY POLICY</a><a class="text-outline hover:text-on-surface transition-colors" href="#">TERMS OF EXPERIENCE</a><a class="text-outline hover:text-on-surface transition-colors" href="#">VALET PARKING</a></div></div></div></footer></body></html>
